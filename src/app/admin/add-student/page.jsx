@@ -103,7 +103,7 @@ const AddStudent = () => {
             <input
               id="image"
               name="image"
-              type="text"
+              type="file"
               className="w-full px-3 py-2 border rounded"
               onChange={AddStudentForm.handleChange}
               onBlur={AddStudentForm.handleBlur}

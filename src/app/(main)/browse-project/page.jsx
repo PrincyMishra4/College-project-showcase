@@ -8,7 +8,7 @@ const BrowseProject = () => {
   const [addProjectList, setAddProjectList] = useState([]);
   const [masterList, setMasterList] = useState([]);
 
-  
+
 
   const fetchProjects = () => {
     axios.get('http://localhost:5000/project/getall')
@@ -23,7 +23,7 @@ const BrowseProject = () => {
   useEffect(() => {
     fetchProjects();
   }, []);
-  
+
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
@@ -50,7 +50,7 @@ const BrowseProject = () => {
       {/* Courses Grid */}
       <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
         {projects.map((project) => (
-          <Link href={'/view-project/'+project._id} key={project._id} className="bg-white shadow-lg rounded-lg overflow-hidden p-6">
+          <Link href={'/view-project/' + project._id} key={project._id} className="bg-white shadow-lg rounded-lg overflow-hidden p-6">
             {/* Course Image */}
             {project.image ? (
               <img src={project.image} alt={project.title} className="w-full h-48 object-cover rounded-lg mb-4" />
@@ -67,8 +67,8 @@ const BrowseProject = () => {
             <h2 className="text-xl font-semibold text-gray-800 mb-2">{project.title}</h2>
             <p className="text-gray-600 text-sm mb-4">{project.description}</p>
 
-             description
-             
+            description
+
             <p className="text-sm text-gray-500 mt-4">
               {new Date(project.createdAt).toLocaleDateString()} at {new Date(project.createdAt).toLocaleTimeString()}
             </p>

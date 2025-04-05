@@ -3,51 +3,61 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const AddProject = () => {
 
-    const [studentlist, setStudentlist] = useState([]);
-    const [imageUrl, setImageUrl] = useState('');
+  const [studentlist, setStudentlist] = useState([]);
+  const [imageUrl, setImageUrl] = useState('');
 
-    const handleFileUpload = (e) => {
-      const file = e.target.files[0];
-  
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', 'mypreset');
-      formData.append('cloud_name', 'dcii9mcsm');
-  
-      axios.post('https://api.cloudinary.com/v1_1/dcii9mcsm/image/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
-        .then((result) => {
-          setImageUrl(result.data.secure_url); // Save uploaded image URL
-          toast.success('File Uploaded Successfully');
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error('Failed to Upload File');
-        });
-    };
-  
-    const fetchStudentlist = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/student/getall');
-        console.log(response.data);
-        setStudentlist(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  
-    useEffect(() => {
-      fetchStudentlist();
-    }, [])
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+
+    formData.append('file', file);
+    formData.append('upload_preset', 'collegeproject');
+    formData.append('cloud_name', 'dcii9mcsm');
+
+    // const cloudinaryUrl = process.env.CLOUDINARY_URL;
+
+    const res = await axios.post('https://api.cloudinary.com/v1_1/dcii9mcsm/image/upload', formData)
+    // headers: { 'Content-Type': 'multipart/form-data' }
+    if (res.status === 200) {
+      AddProjectForm.setFieldValue('image', res.data.imageUrl)
+      console.log(res.data);
+
+    }
+    // .then((result) => {
+    //   setImageUrl(result.data.secure_url); // Save uploaded image URL
+    //   toast.success('File Uploaded Successfully');
+    //   console.log(imageUrl);
+
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    //   toast.error('Failed to Upload File');
+    // });
+  };
+
+  const fetchStudentlist = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/student/getall');
+      console.log(response.data);
+      setStudentlist(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStudentlist();
+  }, [])
 
   const AddProjectForm = useFormik({
     initialValues: {
       title: '',
-      video: '', 
+      video: '',
       image: '',
       description: '',
       githublink: '',
@@ -55,21 +65,30 @@ const AddProject = () => {
       category: '',
       developedby: '',
     },
-    // validationSchema: Yup.object({
-    //   name: Yup.string().required('Name is required'),
-    //   rollno: Yup.string().required('Roll number is required'),
-    //   course: Yup.string().required('Course is required'),
-    // }),
-    onSubmit: (values) => {
+    validationSchema: Yup.object({
+      name: Yup.string().required('Name is required'),
+      rollno: Yup.string().required('Roll number is required'),
+      course: Yup.string().required('Course is required'),
+    }),
+    onSubmit: (values) => { //use
       const projectData = {
         ...values,
         image: imageUrl
       };
       console.log('Form submitted:', values);
       
+      axios.post('http://localhost:5000/Project/add', projectData)
+      .then(() => {
+        toast.success('Add Project Successfully');
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error('Something went wrong');
+      });
+
     },
   });
- 
+
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-full max-w-md mx-auto">
@@ -88,9 +107,9 @@ const AddProject = () => {
               onBlur={AddProjectForm.handleBlur}
               value={AddProjectForm.values.title}
             />
-            {AddProjectForm.touched.title && AddProjectForm.errors.title && (
+            {/* {AddProjectForm.touched.title && AddProjectForm.errors.title && (
               <span className="text-sm text-red-500">{AddProjectForm.errors.title}</span>
-            )}
+            )} */}
           </div>
 
           <div className="mb-4">
@@ -100,15 +119,15 @@ const AddProject = () => {
             <input
               id="video"
               name="video"
-              type="text"
+              type="file"
               className="w-full px-3 py-1 border rounded"
               onChange={AddProjectForm.handleChange}
               onBlur={AddProjectForm.handleBlur}
               value={AddProjectForm.values.video}
             />
-            {AddProjectForm.touched.video && AddProjectForm.errors.video && (
+            {/* {AddProjectForm.touched.video && AddProjectForm.errors.video && (
               <span className="text-sm text-red-500">{AddProjectForm.errors.video}</span>
-            )}
+            )} */}
           </div>
 
           <div className="mb-4">
@@ -124,27 +143,26 @@ const AddProject = () => {
               onBlur={AddProjectForm.handleBlur}
               value={AddProjectForm.values.description}
             />
-            {AddProjectForm.touched.description && AddProjectForm.errors.description && (
+            {/* {AddProjectForm.touched.description && AddProjectForm.errors.description && (
               <span className="text-sm text-red-500">{AddProjectForm.errors.description}</span>
-            )}
+            )} */}
           </div>
 
           <div className="mb-4">
             <label htmlFor="image" className="block text-sm font-medium">
-              Image 
+              Image
             </label>
             <input
               id="image"
-              name="image"
               type="file"
               className="w-full px-3 py-1 border rounded"
-              onChange={AddProjectForm.handleFileUpload}
+              onChange={handleFileUpload}
               onBlur={AddProjectForm.handleBlur}
               value={AddProjectForm.values.image}
             />
-            {AddProjectForm.touched.image && AddProjectForm.errors.image && (
-              <span className="text-sm text-red-500">{AddProjectForm.errors.image}</span>
-            )}
+            {/* {AddProjectForm.touched.image && AddProjectForm.errors.image && (
+              <span span className="text-sm text-red-500">{AddProjectForm.errors.image}</span>
+            )} */}
           </div>
 
           <div className="mb-4">
@@ -178,9 +196,9 @@ const AddProject = () => {
               onBlur={AddProjectForm.handleBlur}
               value={AddProjectForm.values.viewlink}
             />
-            {AddProjectForm.touched.viewlink && AddProjectForm.errors.viewlink && (
+            {/* {AddProjectForm.touched.viewlink && AddProjectForm.errors.viewlink && (
               <span className="text-sm text-red-500">{AddProjectForm.errors.viewlink}</span>
-            )}
+            )} */}
           </div>
 
           <div className="mb-4">
@@ -196,28 +214,10 @@ const AddProject = () => {
               onBlur={AddProjectForm.handleBlur}
               value={AddProjectForm.values.category}
             />
-            {AddProjectForm.touched.category && AddProjectForm.errors.category && (
+            {/* {AddProjectForm.touched.category && AddProjectForm.errors.category && (
               <span className="text-sm text-red-500">{AddProjectForm.errors.category}</span>
-            )}
+            )} */}
           </div>
-
-          {/* <div className="mb-4">
-            <label htmlFor="developedby" className="block text-sm font-medium">
-              Developed By
-            </label>
-            <input
-              id="developedby"
-              name="developedby"
-              type="text"
-              className="w-full px-3 py-1 border rounded"
-              onChange={AddProjectForm.handleChange}
-              onBlur={AddProjectForm.handleBlur}
-              value={AddProjectForm.values.developedby}
-            />
-            {AddProjectForm.touched.developedby && AddProjectForm.errors.developedby && (
-              <span className="text-sm text-red-500">{AddProjectForm.errors.developedby}</span>
-            )}
-          </div> */}
           <div className="mb-4">
             <label htmlFor="developedby" className="block text-sm font-medium">
               Developed By
@@ -243,6 +243,7 @@ const AddProject = () => {
           <button
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded w-full mt-4"
+
           >
             Add
           </button>

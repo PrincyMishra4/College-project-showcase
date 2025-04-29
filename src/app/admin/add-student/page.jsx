@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import React from 'react';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 
 const AddStudent = () => {
@@ -18,16 +19,19 @@ const AddStudent = () => {
     },
 
 
-    // validationSchema: Yup.object({
-    //   name: Yup.string().required('Name is required'),
-    //   rollno: Yup.string().required('Roll number is required'),
-    //   course: Yup.string().required('Course is required'),
-    // }),
+    validationSchema: Yup.object({
+      name: Yup.string().required('Name is required'),
+      rollno: Yup.string().required('Roll number is required'),
+      department: Yup.string().required('Department is required'),
+      course: Yup.string().required('Course is required'),
+    }),
     onSubmit: (values) => {
       console.log('Form submitted:', values);
-      axios.post('http://localhost:5000/student/add', studentData)
+      axios.post('http://localhost:5000/student/add', values)
         .then(() => {
-          toast.success('Add Student');
+          toast.success('Student added successfully');
+          // Reset form after successful submission
+          AddStudentForm.resetForm();
         })
         .catch((err) => {
           console.log(err);
@@ -36,6 +40,16 @@ const AddStudent = () => {
       
     },
   });
+
+  // File input handler
+  const handleFileChange = (event) => {
+    const file = event.currentTarget.files[0];
+    if (file) {
+      // Here you would typically upload the file to your server or a storage service
+      // For now, we'll just update the formik state with a placeholder
+      AddStudentForm.setFieldValue('image', URL.createObjectURL(file));
+    }
+  };
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -98,16 +112,16 @@ const AddStudent = () => {
 
           <div className="mb-4">
             <label htmlFor="image" className="block text-sm font-medium">
-              Image URL
+              Profile Image
             </label>
             <input
               id="image"
               name="image"
               type="file"
+              accept="image/*"
               className="w-full px-3 py-2 border rounded"
-              onChange={AddStudentForm.handleChange}
+              onChange={handleFileChange}
               onBlur={AddStudentForm.handleBlur}
-              value={AddStudentForm.values.image}
             />
             {AddStudentForm.touched.image && AddStudentForm.errors.image && (
               <span className="text-sm text-red-500">{AddStudentForm.errors.image}</span>

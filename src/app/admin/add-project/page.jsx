@@ -11,34 +11,49 @@ const AddProject = () => {
   const [imageUrl, setImageUrl] = useState('');
 
 
-  const handleFileUpload = async (e) => {
+
+  const upload = (e) => {
+
     const file = e.target.files[0];
-    const formData = new FormData();
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', 'collegeproject')
+    fd.append('colud_name', 'dcii9mcsm')
 
-    formData.append('file', file);
-    formData.append('upload_preset', 'collegeproject');
-    formData.append('cloud_name', 'dcii9mcsm');
+    axios.post('https://api.cloudinary.com/v1_1/dcii9mcsm/image/upload', fd)
+        .then((result) => {
+            toast.success('file upload successfully');
+            console.log(result.data);
+            // setPreview(result.data.url);
+            AddProjectForm.setFieldValue('image', result.data.url);
+        }).catch((err) => {
+            console.log(err);
+            toast.error('failed to upload file');
 
-    // const cloudinaryUrl = process.env.CLOUDINARY_URL;
+        });
+}
 
-    const res = await axios.post('https://api.cloudinary.com/v1_1/dcii9mcsm/image/upload', formData)
-    // headers: { 'Content-Type': 'multipart/form-data' }
-    if (res.status === 200) {
-      AddProjectForm.setFieldValue('image', res.data.imageUrl)
-      console.log(res.data);
+  const Videoupload = (e) => {
 
-    }
-    // .then((result) => {
-    //   setImageUrl(result.data.secure_url); // Save uploaded image URL
-    //   toast.success('File Uploaded Successfully');
-    //   console.log(imageUrl);
+    const file = e.target.files[0];
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', 'collegeproject')
+    fd.append('colud_name', 'dcii9mcsm')
 
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    //   toast.error('Failed to Upload File');
-    // });
-  };
+    axios.post('https://api.cloudinary.com/v1_1/dcii9mcsm/video/upload', fd)
+        .then((result) => {
+            toast.success('file upload successfully');
+            console.log(result.data);
+            // setPreview(result.data.url);
+            AddProjectForm.setFieldValue('video', result.data.url);
+        }).catch((err) => {
+            console.log(err);
+            toast.error('failed to upload file');
+
+        });
+}
+
 
   const fetchStudentlist = async () => {
     try {
@@ -66,20 +81,18 @@ const AddProject = () => {
       developedby: '',
     },
     validationSchema: Yup.object({
-      name: Yup.string().required('Name is required'),
-      rollno: Yup.string().required('Roll number is required'),
-      course: Yup.string().required('Course is required'),
+      title: Yup.string().required('title is required'),
+      // rollno: Yup.string().required('Roll number is required'),
+      // course: Yup.string().required('Course is required'),
     }),
-    onSubmit: (values) => { //use
-      const projectData = {
-        ...values,
-        image: imageUrl
-      };
-      console.log('Form submitted:', values);
+    onSubmit: (values, {resetForm}) => { //use
+      // console.log('Form submitted:', values);
       
-      axios.post('http://localhost:5000/Project/add', projectData)
-      .then(() => {
+      axios.post('http://localhost:5000/project/add', values)
+      .then((result) => {
+        console.log(result.data);
         toast.success('Add Project Successfully');
+        resetForm(); // Reset the form after successful submission
       })
       .catch((err) => {
         console.log(err);
@@ -92,7 +105,7 @@ const AddProject = () => {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-full max-w-md mx-auto">
-        <h1 className="uppercase font-bold my-6 text-3xl text-center text-gray-600">Add Project Form</h1>
+        <h1 className="uppercase font-bold my-6 text-3xl text-center text-gray-600">Add Project</h1>
         <form onSubmit={AddProjectForm.handleSubmit}>
           <div className="mb-4">
             <label htmlFor="title" className="block text-sm font-medium">
@@ -100,7 +113,6 @@ const AddProject = () => {
             </label>
             <input
               id="title"
-              name="title"
               type="text"
               className="w-full px-3 py-1 border rounded"
               onChange={AddProjectForm.handleChange}
@@ -113,13 +125,13 @@ const AddProject = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="video" className="block text-sm font-medium">
+            <label htmlFor="Videoupload" className="block text-sm font-medium">
               Video
+              <input type="file" onChange={Videoupload} hidden id='Videoupload'/>
             </label>
             <input
               id="video"
-              name="video"
-              type="file"
+              type="text"
               className="w-full px-3 py-1 border rounded"
               onChange={AddProjectForm.handleChange}
               onBlur={AddProjectForm.handleBlur}
@@ -136,7 +148,6 @@ const AddProject = () => {
             </label>
             <input
               id="description"
-              name="description"
               type="text"
               className="w-full px-3 py-1 border rounded"
               onChange={AddProjectForm.handleChange}
@@ -149,14 +160,15 @@ const AddProject = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="image" className="block text-sm font-medium">
+            <label htmlFor="upload" className="block text-sm font-medium">
               Image
+              <input type="file" onChange={upload} hidden id='upload'/>
             </label>
             <input
               id="image"
-              type="file"
+              type="text"
               className="w-full px-3 py-1 border rounded"
-              onChange={handleFileUpload}
+              onChange={AddProjectForm.handleChange}
               onBlur={AddProjectForm.handleBlur}
               value={AddProjectForm.values.image}
             />
@@ -171,7 +183,6 @@ const AddProject = () => {
             </label>
             <input
               id="githublink"
-              name="githublink"
               type="link"
               className="w-full px-3 py-1 border rounded"
               onChange={AddProjectForm.handleChange}
@@ -189,7 +200,6 @@ const AddProject = () => {
             </label>
             <input
               id="viewlink"
-              name="viewlink"
               type="link"
               className="w-full px-3 py-1 border rounded"
               onChange={AddProjectForm.handleChange}
@@ -207,7 +217,6 @@ const AddProject = () => {
             </label>
             <input
               id="category"
-              name="category"
               type="text"
               className="w-full px-3 py-1 border rounded"
               onChange={AddProjectForm.handleChange}
@@ -224,7 +233,6 @@ const AddProject = () => {
             </label>
             <select
               id="developedby"
-              name="developedby"
               className="w-full px-3 py-1 border rounded"
               onChange={AddProjectForm.handleChange}
               onBlur={AddProjectForm.handleBlur}

@@ -10,7 +10,7 @@ const images = [
   { src: "https://pmstudycircle.com/wp-content/uploads/2021/06/project.jpg", title: "" },
 ];
 
-const HomePageSlider = () => {
+const HomePage = () => {
   const [current, setCurrent] = useState(0);
   const length = images.length;
 
@@ -63,4 +63,4 @@ const HomePageSlider = () => {
   );
 };
 
-export default HomePageSlider;
+export default HomePage;

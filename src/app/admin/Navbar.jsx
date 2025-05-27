@@ -36,6 +36,7 @@ const Navbar = () => {
     { name: 'Add Student', href: '/admin/add-student' },
     { name: 'Manage Students', href: '/admin/manage-student' },
     { name: 'Manage Users', href: '/admin/manage-user' },
+
   ];
 
   return (
@@ -46,20 +47,10 @@ const Navbar = () => {
           <div className="flex-shrink-0 flex items-center">
             <Link href="/admin" className="flex items-center space-x-2">
               <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center overflow-hidden shadow-md">
-                <Image 
-                  src="/favicon.ico" 
-                  alt="College Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/40?text=CPS";
-                  }}
-                />
+                <img src="/logocps.png" alt="" />
               </div>
               <span className="text-indigo-700 font-bold text-lg hidden sm:block">
-                College Project Showcase
+                MindGallery
               </span>
             </Link>
           </div>

@@ -1,134 +1,328 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { 
+  LayoutDashboard,
+  FolderOpen,
+  Users,
+  UserCheck,
+  Plus,
+  Settings,
+  BarChart3,
+  TrendingUp,
+  Calendar,
+  Eye,
+  Activity,
+  PieChart,
+  ArrowUpRight,
+  Sparkles
+} from 'lucide-react';
 
 const AdminHome = () => {
-  return (
-    <div className="bg-gray-50 dark:bg-neutral-900 min-h-screen">
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-        <div className="mb-10 text-center">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white sm:text-4xl mb-2">
-            Admin Dashboard
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Manage your college project showcase platform
-          </p>
-        </div>
+  const [stats, setStats] = useState({
+    totalProjects: 0,
+    totalStudents: 0,
+    totalUsers: 0,
+    recentActivity: 0
+  });
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Projects Card */}
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/[.7]">
-            <div className="h-52 flex flex-col justify-center items-center bg-blue-50 rounded-t-xl dark:bg-neutral-700">
-              <svg className="w-16 h-16 text-blue-600 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776" />
-              </svg>
+  // Mock data - replace with actual API calls
+  useEffect(() => {
+    // Simulate loading stats
+    setTimeout(() => {
+      setStats({
+        totalProjects: 142,
+        totalStudents: 89,
+        totalUsers: 67,
+        recentActivity: 12
+      });
+    }, 1000);
+  }, []);
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const statCards = [
+    {
+      title: "Total Projects",
+      value: stats.totalProjects,
+      icon: FolderOpen,
+      color: "from-primary-500 to-primary-600",
+      bgColor: "bg-primary-50 dark:bg-primary-900/20",
+      textColor: "text-primary-600 dark:text-primary-400",
+      change: "+12%",
+      changeType: "increase"
+    },
+    {
+      title: "Active Students",
+      value: stats.totalStudents,
+      icon: Users,
+      color: "from-accent-500 to-accent-600",
+      bgColor: "bg-accent-50 dark:bg-accent-900/20",
+      textColor: "text-accent-600 dark:text-accent-400",
+      change: "+8%",
+      changeType: "increase"
+    },
+    {
+      title: "Registered Users",
+      value: stats.totalUsers,
+      icon: UserCheck,
+      color: "from-secondary-500 to-secondary-600",
+      bgColor: "bg-secondary-50 dark:bg-secondary-900/20",
+      textColor: "text-secondary-600 dark:text-secondary-400",
+      change: "+15%",
+      changeType: "increase"
+    },
+    {
+      title: "Recent Activity",
+      value: stats.recentActivity,
+      icon: Activity,
+      color: "from-success-500 to-success-600",
+      bgColor: "bg-success-50 dark:bg-success-900/20",
+      textColor: "text-success-600 dark:text-success-400",
+      change: "+5%",
+      changeType: "increase"
+    }
+  ];
+
+  const managementCards = [
+    {
+      title: "Projects",
+      description: "Manage all student projects, submissions, and showcase content.",
+      icon: FolderOpen,
+      color: "from-primary-500 to-primary-600",
+      bgColor: "bg-primary-50 dark:bg-primary-900/20",
+      manageLink: "/admin/manage-project",
+      addLink: "/admin/add-project",
+      stats: `${stats.totalProjects} Projects`
+    },
+    {
+      title: "Students",
+      description: "Manage student profiles, registrations, and academic information.",
+      icon: Users,
+      color: "from-accent-500 to-accent-600",
+      bgColor: "bg-accent-50 dark:bg-accent-900/20",
+      manageLink: "/admin/manage-student",
+      addLink: "/admin/add-student",
+      stats: `${stats.totalStudents} Students`
+    },
+    {
+      title: "Users",
+      description: "Manage user accounts, roles, and platform access permissions.",
+      icon: UserCheck,
+      color: "from-secondary-500 to-secondary-600",
+      bgColor: "bg-secondary-50 dark:bg-secondary-900/20",
+      manageLink: "/admin/manage-user",
+      addLink: null,
+      stats: `${stats.totalUsers} Users`
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-gradient-to-r from-primary-500 to-accent-500 rounded-lg">
+              <LayoutDashboard className="w-6 h-6 text-white" />
             </div>
-            
-            <div className="p-5 sm:p-6 flex-grow">
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                Projects
-              </h3>
-              <p className="mt-2 text-gray-600 dark:text-neutral-400">
-                Manage all projects submitted by students.
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Admin Dashboard
+            </h1>
+            <div className="ml-2">
+              <Sparkles className="w-6 h-6 text-accent-500 animate-pulse" />
+            </div>
+          </div>
+          <p className="text-gray-600 dark:text-gray-300">
+            Welcome back! Here's what's happening with your platform today.
+          </p>
+        </motion.div>
+
+        {/* Stats Cards */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        >
+          {statCards.map((card, index) => (
+            <motion.div
+              key={index}
+              variants={cardVariants}
+              whileHover={{ scale: 1.02, y: -4 }}
+              className="glass card-modern p-6 relative overflow-hidden"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-3 rounded-lg ${card.bgColor}`}>
+                  <card.icon className={`w-6 h-6 ${card.textColor}`} />
+                </div>
+                <div className="flex items-center text-sm text-success-600 dark:text-success-400">
+                  <TrendingUp className="w-4 h-4 mr-1" />
+                  {card.change}
+                </div>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  {card.title}
+                </p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {card.value}
+                </p>
+              </div>
+              
+              {/* Gradient overlay */}
+              <div className={`absolute top-0 right-0 w-16 h-16 bg-gradient-to-br ${card.color} opacity-10 rounded-bl-full`}></div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Management Cards */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8"
+        >
+          {managementCards.map((card, index) => (
+            <motion.div
+              key={index}
+              variants={cardVariants}
+              whileHover={{ scale: 1.02, y: -4 }}
+              className="glass card-modern p-6 group relative overflow-hidden"
+            >
+              {/* Header */}
+              <div className="flex items-center mb-4">
+                <div className={`p-3 rounded-lg ${card.bgColor} mr-4`}>
+                  <card.icon className="w-8 h-8 text-gray-700 dark:text-gray-300" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    {card.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {card.stats}
+                  </p>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                {card.description}
               </p>
-            </div>
-            
-            <div className="p-5 sm:p-6 border-t border-gray-200 dark:border-neutral-700">
-              <Link 
-                href="/admin/manage-project" 
-                className="inline-flex items-center gap-x-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-              >
-                Manage Projects
-                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14" />
-                  <path d="M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-              <Link 
-                href="/admin/add-project" 
-                className="ml-4 inline-flex items-center gap-x-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
-              >
-                Add New
-                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 5v14" />
-                  <path d="M5 12h14" />
-                </svg>
-              </Link>
-            </div>
+
+              {/* Actions */}
+              <div className="flex flex-col gap-3">
+                <Link
+                  href={card.manageLink}
+                  className="btn-modern bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white flex items-center justify-between group/btn"
+                >
+                  <span>Manage {card.title}</span>
+                  <ArrowUpRight className="w-5 h-5 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                </Link>
+                
+                {card.addLink && (
+                  <Link
+                    href={card.addLink}
+                    className={`btn-modern bg-gradient-to-r ${card.color} text-white flex items-center justify-center gap-2 hover:shadow-lg transition-all`}
+                  >
+                    <Plus className="w-5 h-5" />
+                    Add New
+                  </Link>
+                )}
+              </div>
+
+              {/* Gradient overlay */}
+              <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${card.color} opacity-5 rounded-bl-full group-hover:opacity-10 transition-opacity`}></div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Quick Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
+          className="glass card-modern p-6"
+        >
+          <div className="flex items-center gap-2 mb-6">
+            <Settings className="w-6 h-6 text-primary-500" />
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Quick Actions
+            </h2>
           </div>
           
-          {/* Students Card */}
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/[.7]">
-            <div className="h-52 flex flex-col justify-center items-center bg-amber-50 rounded-t-xl dark:bg-neutral-700">
-              <svg className="w-16 h-16 text-amber-600 dark:text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-              </svg>
-            </div>
-            
-            <div className="p-5 sm:p-6 flex-grow">
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                Students
-              </h3>
-              <p className="mt-2 text-gray-600 dark:text-neutral-400">
-                Manage student profiles and information.
-              </p>
-            </div>
-            
-            <div className="p-5 sm:p-6 border-t border-gray-200 dark:border-neutral-700">
-              <Link 
-                href="/admin/manage-student" 
-                className="inline-flex items-center gap-x-2 text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300"
-              >
-                Manage Students
-                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14" />
-                  <path d="M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-              <Link 
-                href="/admin/add-student" 
-                className="ml-4 inline-flex items-center gap-x-2 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
-              >
-                Add New
-                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 5v14" />
-                  <path d="M5 12h14" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-          
-          {/* Users Card */}
-          <div className="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/[.7]">
-            <div className="h-52 flex flex-col justify-center items-center bg-purple-50 rounded-t-xl dark:bg-neutral-700">
-              <svg className="w-16 h-16 text-purple-600 dark:text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-              </svg>
-            </div>
-            
-            <div className="p-5 sm:p-6 flex-grow">
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                Users
-              </h3>
-              <p className="mt-2 text-gray-600 dark:text-neutral-400">
-                Manage user accounts and permissions.
-              </p>
-            </div>
-            
-            <div className="p-5 sm:p-6 border-t border-gray-200 dark:border-neutral-700">
-              <Link 
-                href="/admin/manage-user" 
-                className="inline-flex items-center gap-x-2 text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
-              >
-                Manage Users
-                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14" />
-                  <path d="M12 5l7 7-7 7" />
-                </svg>
-              </Link>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link
+              href="/admin/add-project"
+              className="p-4 rounded-lg bg-primary-50 hover:bg-primary-100 dark:bg-primary-900/20 dark:hover:bg-primary-900/30 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary-100 dark:bg-primary-800 rounded-lg group-hover:scale-110 transition-transform">
+                  <Plus className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                </div>
+                <span className="font-medium text-gray-900 dark:text-white">Add Project</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/add-student"
+              className="p-4 rounded-lg bg-accent-50 hover:bg-accent-100 dark:bg-accent-900/20 dark:hover:bg-accent-900/30 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-accent-100 dark:bg-accent-800 rounded-lg group-hover:scale-110 transition-transform">
+                  <Plus className="w-5 h-5 text-accent-600 dark:text-accent-400" />
+                </div>
+                <span className="font-medium text-gray-900 dark:text-white">Add Student</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/browse-project"
+              className="p-4 rounded-lg bg-secondary-50 hover:bg-secondary-100 dark:bg-secondary-900/20 dark:hover:bg-secondary-900/30 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-secondary-100 dark:bg-secondary-800 rounded-lg group-hover:scale-110 transition-transform">
+                  <Eye className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
+                </div>
+                <span className="font-medium text-gray-900 dark:text-white">View Portal</span>
+              </div>
+            </Link>
+
+            <div className="p-4 rounded-lg bg-success-50 hover:bg-success-100 dark:bg-success-900/20 dark:hover:bg-success-900/30 transition-colors group cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-success-100 dark:bg-success-800 rounded-lg group-hover:scale-110 transition-transform">
+                  <BarChart3 className="w-5 h-5 text-success-600 dark:text-success-400" />
+                </div>
+                <span className="font-medium text-gray-900 dark:text-white">Analytics</span>
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

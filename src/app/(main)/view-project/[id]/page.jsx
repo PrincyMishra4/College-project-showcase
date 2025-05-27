@@ -3,24 +3,46 @@ import { useParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { 
+  Github, 
+  ExternalLink, 
+  Calendar, 
+  User, 
+  Tag, 
+  Eye, 
+  Play, 
+  ArrowLeft,
+  MapPin,
+  Linkedin,
+  Clock,
+  Heart,
+  Share,
+  Download
+} from 'lucide-react';
 
 const ViewProject = () => {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [developer, setDeveloper] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
         setLoading(true);
         const response = await axios.get(`http://localhost:5000/project/getbyid/${id}`);
+        console.log(response.data);
+        
         setProject(response.data);
         
         // Fetch student details if developedby is available
         if (response.data.developedby) {
           try {
             const studentResponse = await axios.get(`http://localhost:5000/student/getbyid/${response.data.developedby}`);
+            console.log(studentResponse.data);
+            
             setDeveloper(studentResponse.data);
           } catch (err) {
             console.error('Error fetching developer data:', err);
@@ -37,22 +59,61 @@ const ViewProject = () => {
     fetchProjectData();
   }, [id]);
 
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: project.title,
+        text: project.description,
+        url: window.location.href,
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+  };
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[70vh]">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-violet-500"></div>
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900 flex justify-center items-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center space-y-4"
+        >
+          <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-500 rounded-full animate-spin"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading project details...</p>
+        </motion.div>
       </div>
     );
   }
 
   if (!project) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh]">
-        <h2 className="text-2xl font-bold text-gray-700">Project not found</h2>
-        <p className="mt-2 text-gray-600">The project you're looking for doesn't exist or has been removed.</p>
-        <Link href="/browse-project" className="mt-6 bg-violet-600 hover:bg-violet-700 text-white py-2 px-6 rounded-lg transition duration-300">
-          Browse Projects
-        </Link>
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900 flex flex-col items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center"
+        >
+          <div className="w-24 h-24 bg-danger-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+            <Eye className="w-12 h-12 text-danger-500" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Project Not Found</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md">
+            The project you're looking for doesn't exist or has been removed.
+          </p>
+          <Link 
+            href="/browse-project" 
+            className="btn-modern bg-primary-500 hover:bg-primary-600 text-white inline-flex items-center gap-2"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Browse Projects
+          </Link>
+        </motion.div>
       </div>
     );
   }
@@ -64,159 +125,296 @@ const ViewProject = () => {
     day: 'numeric'
   });
 
+  const relativeTime = new Date(project.createdAt).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* Project Header */}
-      <div className="bg-gradient-to-r from-gray-500 to-blue-500 rounded-xl p-8 mb-8 text-white">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-          <div>
-            <span className="inline-block px-3 py-1 bg-white/20 rounded-full text-sm font-medium mb-3">
-              {project.category}
-            </span>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">{project.title}</h1>
-            <p className="text-white/80">Added on {formattedDate}</p>
-          </div>
-          <div className="flex gap-3 mt-4 md:mt-0">
-            {project.githublink && (
-              <a 
-                href={project.githublink} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center bg-black/30 hover:bg-black/50 text-white font-medium py-2 px-4 rounded-lg transition duration-300"
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Back Button */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="mb-6"
+        >
+          <Link 
+            href="/browse-project"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to Projects
+          </Link>
+        </motion.div>
+
+        {/* Project Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="glass card-modern p-8 mb-8 bg-gradient-to-r from-primary-500/10 to-accent-500/10 dark:from-primary-400/10 dark:to-accent-400/10 border border-primary-200/50 dark:border-primary-700/50"
+        >
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <div className="flex-1">
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
+                  <Tag className="w-4 h-4" />
+                  {project.category}
+                </span>
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm">
+                  <Calendar className="w-4 h-4" />
+                  {relativeTime}
+                </span>
+              </div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                {project.title}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                {project.description?.substring(0, 200)}...
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleLike}
+                className={`btn-modern flex items-center gap-2 ${
+                  isLiked 
+                    ? 'bg-danger-500 hover:bg-danger-600 text-white' 
+                    : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-300'
+                }`}
               >
-                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z" />
-                </svg>
-                GitHub Repo
-              </a>
-            )}
-            {project.viewlink && (
-              <a 
-                href={project.viewlink} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center bg-white text-violet-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-100 transition duration-300"
+                <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+                Like
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleShare}
+                className="btn-modern bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 flex items-center gap-2"
               >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                Live Demo
-              </a>
+                <Share className="w-5 h-5" />
+                Share
+              </motion.button>
+
+              {project.githublink && (
+                <motion.a
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  href={project.githublink} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn-modern bg-gray-900 hover:bg-gray-800 text-white flex items-center gap-2"
+                >
+                  <Github className="w-5 h-5" />
+                  GitHub
+                </motion.a>
+              )}
+              
+              {project.viewlink && (
+                <motion.a
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  href={project.viewlink} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn-modern bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 text-white flex items-center gap-2"
+                >
+                  <ExternalLink className="w-5 h-5" />
+                  Live Demo
+                </motion.a>
+              )}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Media and Description */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Project Image */}
+            {project.image && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="glass card-modern overflow-hidden"
+              >
+                <img 
+                  src={project.image} 
+                  alt={project.title} 
+                  className="w-full h-auto object-cover rounded-lg"
+                />
+              </motion.div>
             )}
-          </div>
-        </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column - Image and Video */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* Project Image */}
-          {project.image && (
-            <div className="overflow-hidden rounded-xl shadow-lg">
-              <img 
-                src={project.image} 
-                alt={project.title} 
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          )}
+            {/* Project Video */}
+            {project.video && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="glass card-modern p-6"
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <Play className="w-6 h-6 text-primary-500" />
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Project Demo</h2>
+                </div>
+                <div className="relative pt-[56.25%] rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
+                  <iframe 
+                    className="absolute top-0 left-0 w-full h-full"
+                    src={project.video}
+                    title={project.title}
+                    allowFullScreen
+                    loading="lazy"
+                  ></iframe>
+                </div>
+              </motion.div>
+            )}
 
-          {/* Project Video */}
-          {project.video && (
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">Project Demo</h2>
-              <div className="relative pt-[56.25%] rounded-lg overflow-hidden">
-                <iframe 
-                  className="absolute top-0 left-0 w-full h-full"
-                  src={project.video}
-                  title={project.title}
-                  allowFullScreen
-                  loading="lazy"
-                ></iframe>
+            {/* Project Description */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="glass card-modern p-6"
+            >
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                <Eye className="w-6 h-6 text-primary-500" />
+                About This Project
+              </h2>
+              <div className="prose prose-gray dark:prose-invert max-w-none">
+                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed">
+                  {project.description}
+                </p>
               </div>
-            </div>
-          )}
-
-          {/* Project Description */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">About This Project</h2>
-            <p className="text-gray-700 whitespace-pre-line">{project.description}</p>
-          </div>
-        </div>
-
-        {/* Right Column - Project Details */}
-        <div className="space-y-6">
-          {/* Category Card */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Project Details</h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Category</h3>
-                <p className="text-lg font-medium text-gray-900">{project.category}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Added On</h3>
-                <p className="text-lg font-medium text-gray-900">{formattedDate}</p>
-              </div>
-            </div>
+            </motion.div>
           </div>
 
-          {/* Developer Card (if available) */}
-          {developer && (
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">Developed By</h2>
-              <div className="flex items-center space-x-4">
-                {developer.image ? (
-                  <img src={developer.image} alt={developer.name} className="w-16 h-16 rounded-full object-cover" />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-violet-200 flex items-center justify-center">
-                    <span className="text-xl font-bold text-violet-600">{developer.name?.charAt(0) || 'S'}</span>
-                  </div>
-                )}
-                <div>
-                  <h3 className="text-lg font-semibold">{developer.name}</h3>
-                  <p className="text-gray-600">{developer.department}</p>
+          {/* Right Column - Project Details and Developer */}
+          <div className="space-y-6">
+            {/* Project Details Card */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="glass card-modern p-6"
+            >
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                <Tag className="w-6 h-6 text-primary-500" />
+                Project Details
+              </h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Category</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{project.category}</span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-700">
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Added On</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{formattedDate}</span>
+                </div>
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</span>
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-success-100 text-success-800 dark:bg-success-900/50 dark:text-success-300">
+                    Published
+                  </span>
                 </div>
               </div>
-              <div className="mt-4 flex space-x-3">
-                {developer.githubprofile && (
-                  <a 
-                    href={developer.githubprofile}
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-gray-700 hover:text-black"
-                    title="GitHub Profile"
-                  >
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z" />
-                    </svg>
-                  </a>
-                )}
-                {developer.linkedinprofile && (
-                  <a 
-                    href={developer.linkedinprofile}
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-gray-700 hover:text-blue-600"
-                    title="LinkedIn Profile"
-                  >
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                  </a>
-                )}
-              </div>
-            </div>
-          )}
+            </motion.div>
 
-          {/* Related Projects Section */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">More Projects</h2>
-            <Link href="/browse-project" className="block text-violet-600 hover:text-violet-800 font-medium">
-              View All Projects →
-            </Link>
+            {/* Developer Card */}
+            {developer && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                className="glass card-modern p-6"
+              >
+                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                  <User className="w-6 h-6 text-primary-500" />
+                  Developer
+                </h2>
+                <div className="flex items-start space-x-4">
+                  {developer.image ? (
+                    <img src={developer.image} alt={developer.name} className="w-16 h-16 rounded-full object-cover ring-2 ring-primary-200 dark:ring-primary-700" />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center ring-2 ring-primary-200 dark:ring-primary-700">
+                      <span className="text-xl font-bold text-white">{developer.name?.charAt(0) || 'S'}</span>
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{developer.name}</h3>
+                    {developer.department && (
+                      <p className="text-gray-600 dark:text-gray-300 flex items-center gap-1 mt-1">
+                        <MapPin className="w-4 h-4" />
+                        {developer.department}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                
+                {(developer.githubprofile || developer.linkedinprofile) && (
+                  <div className="mt-4 flex space-x-3">
+                    {developer.githubprofile && (
+                      <a 
+                        href={developer.githubprofile}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg text-sm transition-colors"
+                      >
+                        <Github className="w-4 h-4" />
+                        GitHub
+                      </a>
+                    )}
+                    {developer.linkedinprofile && (
+                      <a 
+                        href={developer.linkedinprofile}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors"
+                      >
+                        <Linkedin className="w-4 h-4" />
+                        LinkedIn
+                      </a>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {/* More Projects */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="glass card-modern p-6"
+            >
+              <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Explore More</h2>
+              <div className="space-y-3">
+                <Link 
+                  href="/browse-project" 
+                  className="block p-3 rounded-lg bg-primary-50 hover:bg-primary-100 dark:bg-primary-900/50 dark:hover:bg-primary-900/70 transition-colors group"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-primary-700 dark:text-primary-300 font-medium">Browse All Projects</span>
+                    <ArrowLeft className="w-5 h-5 text-primary-500 group-hover:translate-x-1 transition-transform rotate-180" />
+                  </div>
+                </Link>
+                <Link 
+                  href="/browse-department" 
+                  className="block p-3 rounded-lg bg-accent-50 hover:bg-accent-100 dark:bg-accent-900/50 dark:hover:bg-accent-900/70 transition-colors group"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-accent-700 dark:text-accent-300 font-medium">Browse by Department</span>
+                    <ArrowLeft className="w-5 h-5 text-accent-500 group-hover:translate-x-1 transition-transform rotate-180" />
+                  </div>
+                </Link>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>

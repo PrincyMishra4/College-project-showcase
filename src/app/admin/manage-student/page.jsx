@@ -1,22 +1,49 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { MdDelete, MdEdit, MdSearch } from "react-icons/md";
+import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { 
+  Users, 
+  Search, 
+  Filter, 
+  Edit, 
+  Trash2, 
+  Plus, 
+  RefreshCw, 
+  GraduationCap,
+  Mail,
+  Phone,
+  Calendar,
+  BookOpen,
+  User,
+  MoreVertical,
+  Archive,
+  Download
+} from "lucide-react";
 
 const ManageStudent = () => {
   const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteLoading, setDeleteLoading] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("all");
+  const [filterDepartment, setFilterDepartment] = useState("all");
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const router = useRouter();
 
   const fetchStudents = async () => {
     try {
       setLoading(true);
       const response = await axios.get("http://localhost:5000/student/getall");
       setStudents(response.data);
+      setFilteredStudents(response.data);
+      toast.success("Students loaded successfully");
     } catch (error) {
       console.error("Error fetching students:", error);
+      toast.error("Failed to fetch students");
     } finally {
       setLoading(false);
     }
@@ -26,159 +53,394 @@ const ManageStudent = () => {
     fetchStudents();
   }, []);
 
+  // Filter and search logic
+  useEffect(() => {
+    let filtered = students;
+
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(student =>
+        student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.rollno?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.department?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Apply department filter
+    if (filterDepartment !== "all") {
+      filtered = filtered.filter(student => student.department === filterDepartment);
+    }
+
+    setFilteredStudents(filtered);
+  }, [students, searchTerm, filterDepartment]);
+
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this student?")) {
+    if (window.confirm("Are you sure you want to delete this student? This action cannot be undone.")) {
+      setDeleteLoading(id);
       try {
         await axios.delete(`http://localhost:5000/student/delete/${id}`);
-        // Refresh the student list
+        toast.success("Student deleted successfully");
         fetchStudents();
       } catch (error) {
         console.error("Error deleting student:", error);
+        toast.error("Failed to delete student");
+      } finally {
+        setDeleteLoading(null);
       }
     }
   };
 
-  const filteredStudents = students.filter((student) => {
-    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.rollno.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.department.toLowerCase().includes(searchTerm.toLowerCase());
+  const handleBulkDelete = async () => {
+    if (selectedStudents.length === 0) return;
     
-    if (filter === "all") return matchesSearch;
-    return matchesSearch && student.department === filter;
-  });
+    if (window.confirm(`Are you sure you want to delete ${selectedStudents.length} students? This action cannot be undone.`)) {
+      try {
+        await Promise.all(
+          selectedStudents.map(id => 
+            axios.delete(`http://localhost:5000/student/delete/${id}`)
+          )
+        );
+        toast.success(`${selectedStudents.length} students deleted successfully`);
+        setSelectedStudents([]);
+        fetchStudents();
+      } catch (error) {
+        toast.error("Failed to delete some students");
+      }
+    }
+  };
 
   const departments = [...new Set(students.map(student => student.department))];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900 flex justify-center items-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center space-y-4"
+        >
+          <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-500 rounded-full animate-spin"></div>
+          <p className="text-gray-600 dark:text-gray-300">Loading students...</p>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4 md:mb-0">
-          Manage Students
-        </h1>
-        
-        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-          {/* Search Bar */}
-          <div className="relative">
-            <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
-            <input
-              type="text"
-              placeholder="Search students..."
-              className="pl-10 pr-4 py-2 border rounded-lg w-full md:w-64"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-gradient-to-r from-accent-500 to-secondary-500 rounded-lg">
+              <Users className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Manage Students
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300">
+                View and manage all registered student profiles
+              </p>
+            </div>
           </div>
           
-          {/* Department Filter */}
-          <select 
-            className="border rounded-lg px-4 py-2"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            <option value="all">All Departments</option>
-            {departments.map((dept, index) => (
-              <option key={index} value={dept}>{dept}</option>
-            ))}
-          </select>
-          
-          {/* Add Student Button */}
-          <Link href="/admin/add-student">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 transition duration-200">
-              Add New Student
-            </button>
-          </Link>
-        </div>
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        </div>
-      ) : filteredStudents.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-xl text-gray-600">No students found matching your criteria</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredStudents.map((student) => (
-            <div 
-              key={student._id} 
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+          <div className="flex flex-wrap gap-3">
+            {selectedStudents.length > 0 && (
+              <motion.button
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                onClick={handleBulkDelete}
+                className="btn-modern bg-danger-500 hover:bg-danger-600 text-white flex items-center gap-2"
+              >
+                <Trash2 className="w-5 h-5" />
+                Delete Selected ({selectedStudents.length})
+              </motion.button>
+            )}
+            
+            <Link
+              href="/admin/add-student"
+              className="btn-modern bg-success-500 hover:bg-success-600 text-white flex items-center gap-2"
             >
-              <div className="p-5">
-                <div className="flex items-center space-x-4 mb-4">
-                  <img
-                    src={student.image || "https://via.placeholder.com/80"}
-                    alt={`${student.name}'s profile`}
-                    className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "https://via.placeholder.com/80";
-                    }}
-                  />
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-800">{student.name}</h2>
-                    <p className="text-sm text-gray-500">Roll No: {student.rollno}</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-2 border-t pt-3">
-                  <p className="text-gray-700 flex items-center">
-                    <span className="font-medium w-24">Department:</span> 
-                    <span className="text-gray-800">{student.department}</span>
-                  </p>
-                  <p className="text-gray-700 flex items-center">
-                    <span className="font-medium w-24">Course:</span> 
-                    <span className="text-gray-800">{student.course}</span>
-                  </p>
-                  
-                  <div className="flex gap-2 mt-2">
-                    {student.githubprofile && (
-                      <a
-                        href={student.githubprofile}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-500 hover:text-black"
-                      >
-                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                        </svg>
-                      </a>
-                    )}
-                    {student.linkedinprofile && (
-                      <a
-                        href={student.linkedinprofile}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-500 hover:text-blue-600"
-                      >
-                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                        </svg>
-                      </a>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="flex justify-end mt-4 space-x-2 pt-2 border-t">
-                  <Link 
-                    href={`/admin/update-student/${student._id}`}
-                    className="text-blue-500 hover:bg-blue-50 p-2 rounded-full transition-colors"
-                  >
-                    <MdEdit className="text-xl" />
-                  </Link>
-                  <button 
-                    onClick={() => handleDelete(student._id)}
-                    className="text-red-500 hover:bg-red-50 p-2 rounded-full transition-colors"
-                  >
-                    <MdDelete className="text-xl" />
-                  </button>
-                </div>
+              <Plus className="w-5 h-5" />
+              Add Student
+            </Link>
+            
+            <button
+              onClick={fetchStudents}
+              className="btn-modern bg-primary-500 hover:bg-primary-600 text-white flex items-center gap-2"
+            >
+              <RefreshCw className="w-5 h-5" />
+              Refresh
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Stats Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+        >
+          <div className="glass card-modern p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Students</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">{students.length}</p>
+              </div>
+              <div className="p-3 bg-accent-100 dark:bg-accent-900/50 rounded-lg">
+                <GraduationCap className="w-8 h-8 text-accent-600 dark:text-accent-400" />
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+          
+          <div className="glass card-modern p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Departments</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">{departments.length}</p>
+              </div>
+              <div className="p-3 bg-secondary-100 dark:bg-secondary-900/50 rounded-lg">
+                <BookOpen className="w-8 h-8 text-secondary-600 dark:text-secondary-400" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="glass card-modern p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Sessions</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">{filteredStudents.length}</p>
+              </div>
+              <div className="p-3 bg-primary-100 dark:bg-primary-900/50 rounded-lg">
+                <User className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Search and Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="glass card-modern p-6 mb-8"
+        >
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search by name, roll number, email, or department..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="input-modern pl-10 w-full"
+              />
+            </div>
+            
+            {/* Department Filter */}
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <select
+                value={filterDepartment}
+                onChange={(e) => setFilterDepartment(e.target.value)}
+                className="input-modern pl-10 pr-8"
+              >
+                <option value="all">All Departments</option>
+                {departments.map(dept => (
+                  <option key={dept} value={dept}>{dept}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          <div className="flex justify-between items-center mt-4">
+            <p className="text-gray-600 dark:text-gray-300">
+              Showing <span className="font-semibold">{filteredStudents.length}</span> of{" "}
+              <span className="font-semibold">{students.length}</span> students
+            </p>
+            
+            {filteredStudents.length !== students.length && (
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setFilterDepartment("all");
+                }}
+                className="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 text-sm font-medium"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+        </motion.div>
+        
+        {/* Students Grid */}
+        {filteredStudents.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="glass card-modern p-16 text-center"
+          >
+            <div className="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Archive className="w-12 h-12 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
+              {searchTerm || filterDepartment !== "all" ? "No students match your filters" : "No Students Found"}
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-6">
+              {searchTerm || filterDepartment !== "all" 
+                ? "Try adjusting your search terms or filters"
+                : "Start by adding student profiles to the platform"
+              }
+            </p>
+            <Link
+              href="/admin/add-student"
+              className="btn-modern bg-primary-500 hover:bg-primary-600 text-white flex items-center gap-2 mx-auto"
+            >
+              <Plus className="w-5 h-5" />
+              Add New Student
+            </Link>
+          </motion.div>
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <AnimatePresence>
+              {filteredStudents.map((student) => (
+                <motion.div
+                  key={student._id}
+                  variants={cardVariants}
+                  layout
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="glass card-modern group relative overflow-hidden"
+                >
+                  {/* Selection Checkbox */}
+                  <div className="absolute top-4 left-4 z-10">
+                    <input
+                      type="checkbox"
+                      checked={selectedStudents.includes(student._id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedStudents([...selectedStudents, student._id]);
+                        } else {
+                          setSelectedStudents(selectedStudents.filter(id => id !== student._id));
+                        }
+                      }}
+                      className="w-5 h-5 text-primary-600 bg-white border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2"
+                    />
+                  </div>
+
+                  <div className="p-6">
+                    {/* Student Avatar and Basic Info */}
+                    <div className="flex items-center mb-4">
+                      <div className="w-16 h-16 bg-gradient-to-r from-accent-400 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                        {student.name?.charAt(0)?.toUpperCase() || 'S'}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                          {student.name}
+                        </h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Roll No: {student.rollno}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Student Details */}
+                    <div className="space-y-3 mb-6">
+                      {student.email && (
+                        <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                          <Mail className="w-4 h-4 text-gray-400" />
+                          <span className="truncate">{student.email}</span>
+                        </div>
+                      )}
+                      
+                      {student.phone && (
+                        <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                          <Phone className="w-4 h-4 text-gray-400" />
+                          <span>{student.phone}</span>
+                        </div>
+                      )}
+                      
+                      {student.department && (
+                        <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                          <BookOpen className="w-4 h-4 text-gray-400" />
+                          <span>{student.department}</span>
+                        </div>
+                      )}
+                      
+                      {student.createdAt && (
+                        <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                          <Calendar className="w-4 h-4 text-gray-400" />
+                          <span>Joined {new Date(student.createdAt).toLocaleDateString()}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => router.push(`/admin/update-student/${student._id}`)}
+                        className="btn-modern bg-primary-500 hover:bg-primary-600 text-white flex items-center gap-2 flex-1 justify-center text-sm"
+                      >
+                        <Edit className="w-4 h-4" />
+                        Edit
+                      </button>
+                      
+                      <button
+                        onClick={() => handleDelete(student._id)}
+                        disabled={deleteLoading === student._id}
+                        className="btn-modern bg-danger-500 hover:bg-danger-600 text-white p-2 disabled:opacity-50"
+                      >
+                        {deleteLoading === student._id ? (
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-accent-500/5 to-secondary-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 };

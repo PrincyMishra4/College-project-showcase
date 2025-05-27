@@ -1,11 +1,15 @@
 import React from 'react'
-import Navbar from './Navbar';
+import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 
 const Layout = ({ children }) => {
     return (
-        <div>
+        <div className="min-h-screen flex flex-col">
             <Navbar />
-            {children}
+            <main className="flex-grow">
+                {children}
+            </main>
+            <Footer />
         </div>
     )
 }

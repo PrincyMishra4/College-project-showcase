@@ -5,14 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { 
-  Users, 
-  Search, 
-  Filter, 
-  Edit, 
-  Trash2, 
-  Plus, 
-  RefreshCw, 
+import {
+  Users,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  Plus,
+  RefreshCw,
   GraduationCap,
   Mail,
   Phone,
@@ -21,7 +21,7 @@ import {
   User,
   MoreVertical,
   Archive,
-  Download
+  Download,
 } from "lucide-react";
 
 const ManageStudent = () => {
@@ -59,24 +59,31 @@ const ManageStudent = () => {
 
     // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(student =>
-        student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.rollno?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.department?.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (student) =>
+          student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.rollno?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          student.department?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Apply department filter
     if (filterDepartment !== "all") {
-      filtered = filtered.filter(student => student.department === filterDepartment);
+      filtered = filtered.filter(
+        (student) => student.department === filterDepartment
+      );
     }
 
     setFilteredStudents(filtered);
   }, [students, searchTerm, filterDepartment]);
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this student? This action cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this student? This action cannot be undone."
+      )
+    ) {
       setDeleteLoading(id);
       try {
         await axios.delete(`http://localhost:5000/student/delete/${id}`);
@@ -93,15 +100,21 @@ const ManageStudent = () => {
 
   const handleBulkDelete = async () => {
     if (selectedStudents.length === 0) return;
-    
-    if (window.confirm(`Are you sure you want to delete ${selectedStudents.length} students? This action cannot be undone.`)) {
+
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${selectedStudents.length} students? This action cannot be undone.`
+      )
+    ) {
       try {
         await Promise.all(
-          selectedStudents.map(id => 
+          selectedStudents.map((id) =>
             axios.delete(`http://localhost:5000/student/delete/${id}`)
           )
         );
-        toast.success(`${selectedStudents.length} students deleted successfully`);
+        toast.success(
+          `${selectedStudents.length} students deleted successfully`
+        );
         setSelectedStudents([]);
         fetchStudents();
       } catch (error) {
@@ -110,7 +123,9 @@ const ManageStudent = () => {
     }
   };
 
-  const departments = [...new Set(students.map(student => student.department))];
+  const departments = [
+    ...new Set(students.map((student) => student.department)),
+  ];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -118,19 +133,19 @@ const ManageStudent = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
+        delayChildren: 0.2,
+      },
+    },
   };
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
+    visible: {
+      opacity: 1,
+      y: 0,
       scale: 1,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
   };
 
   if (loading) {
@@ -142,7 +157,9 @@ const ManageStudent = () => {
           className="flex flex-col items-center space-y-4"
         >
           <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-500 rounded-full animate-spin"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading students...</p>
+          <p className="text-gray-600 dark:text-gray-300">
+            Loading students...
+          </p>
         </motion.div>
       </div>
     );
@@ -171,7 +188,7 @@ const ManageStudent = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="flex flex-wrap gap-3">
             {selectedStudents.length > 0 && (
               <motion.button
@@ -184,7 +201,7 @@ const ManageStudent = () => {
                 Delete Selected ({selectedStudents.length})
               </motion.button>
             )}
-            
+
             <Link
               href="/admin/add-student"
               className="btn-modern bg-success-500 hover:bg-success-600 text-white flex items-center gap-2"
@@ -192,7 +209,7 @@ const ManageStudent = () => {
               <Plus className="w-5 h-5" />
               Add Student
             </Link>
-            
+
             <button
               onClick={fetchStudents}
               className="btn-modern bg-primary-500 hover:bg-primary-600 text-white flex items-center gap-2"
@@ -213,32 +230,44 @@ const ManageStudent = () => {
           <div className="glass card-modern p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Students</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{students.length}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Total Students
+                </p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {students.length}
+                </p>
               </div>
               <div className="p-3 bg-accent-100 dark:bg-accent-900/50 rounded-lg">
                 <GraduationCap className="w-8 h-8 text-accent-600 dark:text-accent-400" />
               </div>
             </div>
           </div>
-          
+
           <div className="glass card-modern p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Departments</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{departments.length}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Departments
+                </p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {departments.length}
+                </p>
               </div>
               <div className="p-3 bg-secondary-100 dark:bg-secondary-900/50 rounded-lg">
                 <BookOpen className="w-8 h-8 text-secondary-600 dark:text-secondary-400" />
               </div>
             </div>
           </div>
-          
+
           <div className="glass card-modern p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Sessions</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{filteredStudents.length}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Active Sessions
+                </p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {filteredStudents.length}
+                </p>
               </div>
               <div className="p-3 bg-primary-100 dark:bg-primary-900/50 rounded-lg">
                 <User className="w-8 h-8 text-primary-600 dark:text-primary-400" />
@@ -266,7 +295,7 @@ const ManageStudent = () => {
                 className="input-modern pl-10 w-full"
               />
             </div>
-            
+
             {/* Department Filter */}
             <div className="relative">
               <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -276,19 +305,23 @@ const ManageStudent = () => {
                 className="input-modern pl-10 pr-8"
               >
                 <option value="all">All Departments</option>
-                {departments.map(dept => (
-                  <option key={dept} value={dept}>{dept}</option>
+                {departments.map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
-          
+
           <div className="flex justify-between items-center mt-4">
             <p className="text-gray-600 dark:text-gray-300">
-              Showing <span className="font-semibold">{filteredStudents.length}</span> of{" "}
-              <span className="font-semibold">{students.length}</span> students
+              Showing{" "}
+              <span className="font-semibold">{filteredStudents.length}</span>{" "}
+              of <span className="font-semibold">{students.length}</span>{" "}
+              students
             </p>
-            
+
             {filteredStudents.length !== students.length && (
               <button
                 onClick={() => {
@@ -302,7 +335,7 @@ const ManageStudent = () => {
             )}
           </div>
         </motion.div>
-        
+
         {/* Students Grid */}
         {filteredStudents.length === 0 ? (
           <motion.div
@@ -314,13 +347,14 @@ const ManageStudent = () => {
               <Archive className="w-12 h-12 text-gray-400" />
             </div>
             <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
-              {searchTerm || filterDepartment !== "all" ? "No students match your filters" : "No Students Found"}
+              {searchTerm || filterDepartment !== "all"
+                ? "No students match your filters"
+                : "No Students Found"}
             </h3>
             <p className="text-gray-500 dark:text-gray-400 mb-6">
-              {searchTerm || filterDepartment !== "all" 
+              {searchTerm || filterDepartment !== "all"
                 ? "Try adjusting your search terms or filters"
-                : "Start by adding student profiles to the platform"
-              }
+                : "Start by adding student profiles to the platform"}
             </p>
             <Link
               href="/admin/add-student"
@@ -353,9 +387,14 @@ const ManageStudent = () => {
                       checked={selectedStudents.includes(student._id)}
                       onChange={(e) => {
                         if (e.target.checked) {
-                          setSelectedStudents([...selectedStudents, student._id]);
+                          setSelectedStudents([
+                            ...selectedStudents,
+                            student._id,
+                          ]);
                         } else {
-                          setSelectedStudents(selectedStudents.filter(id => id !== student._id));
+                          setSelectedStudents(
+                            selectedStudents.filter((id) => id !== student._id)
+                          );
                         }
                       }}
                       className="w-5 h-5 text-primary-600 bg-white border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2"
@@ -365,9 +404,8 @@ const ManageStudent = () => {
                   <div className="p-6">
                     {/* Student Avatar and Basic Info */}
                     <div className="flex items-center mb-4">
-                      <div className="w-16 h-16 bg-gradient-to-r from-accent-400 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
-                        {student.name?.charAt(0)?.toUpperCase() || 'S'}
-                      </div>
+                      <img src={student.image} className="w-16 h-16 bg-gradient-to-r from-accent-400 to-secondary-500 rounded-full flex items-center object-cover justify-center text-white font-bold text-lg mr-4" />
+
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                           {student.name}
@@ -386,25 +424,28 @@ const ManageStudent = () => {
                           <span className="truncate">{student.email}</span>
                         </div>
                       )}
-                      
+
                       {student.phone && (
                         <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
                           <Phone className="w-4 h-4 text-gray-400" />
                           <span>{student.phone}</span>
                         </div>
                       )}
-                      
+
                       {student.department && (
                         <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
                           <BookOpen className="w-4 h-4 text-gray-400" />
                           <span>{student.department}</span>
                         </div>
                       )}
-                      
+
                       {student.createdAt && (
                         <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
                           <Calendar className="w-4 h-4 text-gray-400" />
-                          <span>Joined {new Date(student.createdAt).toLocaleDateString()}</span>
+                          <span>
+                            Joined{" "}
+                            {new Date(student.createdAt).toLocaleDateString()}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -412,13 +453,15 @@ const ManageStudent = () => {
                     {/* Action Buttons */}
                     <div className="flex gap-2">
                       <button
-                        onClick={() => router.push(`/admin/update-student/${student._id}`)}
+                        onClick={() =>
+                          router.push(`/admin/update-student/${student._id}`)
+                        }
                         className="btn-modern bg-primary-500 hover:bg-primary-600 text-white flex items-center gap-2 flex-1 justify-center text-sm"
                       >
                         <Edit className="w-4 h-4" />
                         Edit
                       </button>
-                      
+
                       <button
                         onClick={() => handleDelete(student._id)}
                         disabled={deleteLoading === student._id}

@@ -4,20 +4,32 @@ import axios from 'axios';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, ArrowRight, Calendar, User, Grid, List, Eye, ExternalLink, Github } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 const BrowseProject = () => {
+  const searchParams = useSearchParams();
+  const departmentParam = searchParams.get('department');
+  
   const [projects, setProjects] = useState([]);
   const [addProjectList, setAddProjectList] = useState([]);
   const [masterList, setMasterList] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState(departmentParam || '');
   const [viewMode, setViewMode] = useState('grid');
   const [loading, setLoading] = useState(true);
+  const [departments, setDepartments] = useState([]);
 
   const fetchProjects = () => {
     setLoading(true);
-    axios.get('http://localhost:5000/project/getall')
+    
+    // If department parameter exists, fetch only projects from that department
+    const url = departmentParam 
+      ? `http://localhost:5000/project/getbydepartment/${encodeURIComponent(departmentParam)}`
+      : 'http://localhost:5000/project/getall';
+      
+    axios.get(url)
       .then((res) => {
         console.log(res.data);
         setProjects(res.data);
@@ -26,6 +38,11 @@ const BrowseProject = () => {
         // Extract unique categories
         const categories = [...new Set(res.data.map(project => project.addProject))].filter(Boolean);
         setAddProjectList(categories.map(category => ({ _id: category, title: { image: category } })));
+        
+        // Extract unique departments
+        const depts = [...new Set(res.data.map(project => project.department))].filter(Boolean);
+        setDepartments(depts);
+        
         setLoading(false);
       })
       .catch((err) => {
@@ -36,7 +53,7 @@ const BrowseProject = () => {
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [departmentParam]);
 
   const handleSearch = (e) => {
     const term = e.target.value;
@@ -54,6 +71,12 @@ const BrowseProject = () => {
       filtered = filtered.filter(project => project.addProject === selectedCategory);
     }
     
+    if (selectedDepartment) {
+      filtered = filtered.filter(project => 
+        project.department?.toLowerCase() === selectedDepartment.toLowerCase()
+      );
+    }
+    
     setProjects(filtered);
   };
   
@@ -63,6 +86,36 @@ const BrowseProject = () => {
     let filtered = masterList;
     if (category) {
       filtered = masterList.filter(project => project.addProject === category);
+    }
+    
+    if (selectedDepartment) {
+      filtered = filtered.filter(project => 
+        project.department?.toLowerCase() === selectedDepartment.toLowerCase()
+      );
+    }
+    
+    if (searchTerm) {
+      filtered = filtered.filter(project => 
+        project.title?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        project.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    setProjects(filtered);
+  };
+  
+  const handleDepartmentChange = (department) => {
+    setSelectedDepartment(department);
+    
+    let filtered = masterList;
+    if (department) {
+      filtered = masterList.filter(project => 
+        project.department?.toLowerCase() === department.toLowerCase()
+      );
+    }
+    
+    if (selectedCategory) {
+      filtered = filtered.filter(project => project.addProject === selectedCategory);
     }
     
     if (searchTerm) {
@@ -78,6 +131,7 @@ const BrowseProject = () => {
   const resetFilters = () => {
     setSearchTerm('');
     setSelectedCategory('');
+    setSelectedDepartment('');
     setProjects(masterList);
   };
 
@@ -102,6 +156,16 @@ const BrowseProject = () => {
               <div className="w-full h-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
                 <span className="text-white text-2xl font-bold">{project.title?.charAt(0) || "P"}</span>
               </div>
+            )}
+            {project.department && (
+              <motion.span 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3 }}
+                className="absolute top-4 right-4 bg-white/90 dark:bg-secondary-800/90 text-primary-600 dark:text-primary-400 text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm"
+              >
+                {project.department}
+              </motion.span>
             )}
             {project.addProject && (
               <motion.span 
@@ -186,11 +250,18 @@ const BrowseProject = () => {
                 <h2 className="text-xl font-bold text-secondary-800 dark:text-secondary-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                   {project.title}
                 </h2>
-                {project.addProject && (
-                  <span className="bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-xs font-medium px-3 py-1 rounded-full">
-                    {project.addProject}
-                  </span>
-                )}
+                <div className="flex gap-2">
+                  {project.department && (
+                    <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-medium px-3 py-1 rounded-full">
+                      {project.department}
+                    </span>
+                  )}
+                  {project.addProject && (
+                    <span className="bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-xs font-medium px-3 py-1 rounded-full">
+                      {project.addProject}
+                    </span>
+                  )}
+                </div>
               </div>
               
               <p className="text-secondary-600 dark:text-secondary-400 mb-4 line-clamp-2 leading-relaxed">
@@ -346,33 +417,82 @@ const BrowseProject = () => {
           {/* Filter options */}
           <AnimatePresence>
             {isFilterOpen && (
-              <motion.div 
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 flex items-center justify-center"
+                onClick={() => setIsFilterOpen(false)}
               >
-                <div className="mt-6 p-6 border-t border-secondary-200 dark:border-secondary-700">
-                  <h3 className="mb-4 text-lg font-semibold text-secondary-800 dark:text-secondary-200">Filter by Category</h3>
-                  <div className="flex flex-wrap gap-3">
-                    {addProjectList.map((category) => (
-                      <motion.button
-                        key={category._id}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleCategoryChange(category.title.image)}
-                        className={`px-4 py-2 rounded-full font-medium transition-all ${
-                          selectedCategory === category.title.image
-                            ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg shadow-primary-500/25'
-                            : 'bg-secondary-100 dark:bg-secondary-800 hover:bg-secondary-200 dark:hover:bg-secondary-700 text-secondary-700 dark:text-secondary-300'
-                        }`}
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  className="bg-white dark:bg-secondary-900 p-6 rounded-xl shadow-xl max-w-md w-full mx-4"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <h3 className="text-xl font-bold text-secondary-800 dark:text-secondary-100 mb-4">Filter Projects</h3>
+                  
+                  {/* Category Filter */}
+                  <div className="mb-6">
+                    <h4 className="text-sm font-medium text-secondary-600 dark:text-secondary-400 mb-3">Category</h4>
+                    <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
+                      <div 
+                        className={`px-3 py-2 rounded-lg cursor-pointer transition-all ${!selectedCategory ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300' : 'hover:bg-secondary-100 dark:hover:bg-secondary-800 text-secondary-600 dark:text-secondary-400'}`}
+                        onClick={() => handleCategoryChange('')}
                       >
-                        {category.title.image}
-                      </motion.button>
-                    ))}
+                        All Categories
+                      </div>
+                      {addProjectList.map(category => (
+                        <div 
+                          key={category._id}
+                          className={`px-3 py-2 rounded-lg cursor-pointer transition-all ${selectedCategory === category._id ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300' : 'hover:bg-secondary-100 dark:hover:bg-secondary-800 text-secondary-600 dark:text-secondary-400'}`}
+                          onClick={() => handleCategoryChange(category._id)}
+                        >
+                          {category._id}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                  
+                  {/* Department Filter */}
+                  <div className="mb-6">
+                    <h4 className="text-sm font-medium text-secondary-600 dark:text-secondary-400 mb-3">Department</h4>
+                    <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
+                      <div 
+                        className={`px-3 py-2 rounded-lg cursor-pointer transition-all ${!selectedDepartment ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300' : 'hover:bg-secondary-100 dark:hover:bg-secondary-800 text-secondary-600 dark:text-secondary-400'}`}
+                        onClick={() => handleDepartmentChange('')}
+                      >
+                        All Departments
+                      </div>
+                      {departments.map(department => (
+                        <div 
+                          key={department}
+                          className={`px-3 py-2 rounded-lg cursor-pointer transition-all ${selectedDepartment === department ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300' : 'hover:bg-secondary-100 dark:hover:bg-secondary-800 text-secondary-600 dark:text-secondary-400'}`}
+                          onClick={() => handleDepartmentChange(department)}
+                        >
+                          {department}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Actions */}
+                  <div className="flex justify-between">
+                    <button 
+                      className="text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-100 text-sm font-medium"
+                      onClick={resetFilters}
+                    >
+                      Reset filters
+                    </button>
+                    <button 
+                      className="bg-primary-600 hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                      onClick={() => setIsFilterOpen(false)}
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>

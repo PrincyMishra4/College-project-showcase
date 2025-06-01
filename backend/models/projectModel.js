@@ -4,6 +4,7 @@ const mySchema = new Schema({
     title : String,
     image: { type : String },
     video : { type : String, required : true },
+    department : { type : String, required : true },
     description : { type: String, default: 'Unknown'},
     githublink : { type : String, required : true },
     viewlink : { type : String, required : true },

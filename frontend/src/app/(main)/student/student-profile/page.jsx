@@ -1,7 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaGithub, FaLinkedin, FaGraduationCap, FaBuilding, FaIdCard } from 'react-icons/fa';
+import Link from 'next/link';
+import { FaGithub, FaLinkedin, FaGraduationCap, FaBuilding, FaIdCard, FaPlus } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 
 const StudentProfile = () => {
@@ -13,42 +14,44 @@ const StudentProfile = () => {
   useEffect(() => {
     fetchStudentData();
   }, []);
-
   const fetchStudentData = async () => {
     setLoading(true);
     try {
       // Get the token from localStorage
       const token = localStorage.getItem('token');
       
+      
       if (!token) {
         // Redirect to login if no token is found
         toast.error("Please login to view your profile");
-        router.push('/login');
+        router.push('/student-login');
         return;
       }
 
-      // Make the request with the token in the header
-      const response = await fetch('http://localhost:5000/student/getall', {
+      // Make the request to get the current student's profile
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/student/profile`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
-
-      if (response.status === 401 || response.status === 403) {
-        // Token is invalid or expired
-        localStorage.removeItem('token');
-        toast.error("Session expired. Please login again");
-        router.push('/login');
-        return;
-      }
-
+      
+      // if (response.status === 401 || response.status === 403) {
+      //   // Token is invalid or expired
+      //   localStorage.removeItem('token');
+      //   localStorage.removeItem('student');
+      //   toast.error("Session expired. Please login again");
+      //   router.push('/student-login');
+      //   return;
+      // }
+      
       if (!response.ok) {
         throw new Error('Failed to fetch student data');
       }
       
       const data = await response.json();
+      console.log(data);
       setStudent(data);
     } catch (err) {
       setError(err.message);
@@ -60,7 +63,7 @@ const StudentProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex justify-center items-center">
+      <div className=" flex justify-center items-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
@@ -98,6 +101,7 @@ const StudentProfile = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -107,7 +111,7 @@ const StudentProfile = () => {
             <div className="flex flex-col sm:flex-row items-center gap-8">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
                 <img 
-                  src={student.image !== 'Unknown' ? student.image : 'https://via.placeholder.com/150?text=No+Image'} 
+                  src={student.image ? student.image : 'https://via.placeholder.com/150?text=No+Image'} 
                   alt={student.name} 
                   className="w-full h-full object-cover"
                 />
@@ -232,8 +236,20 @@ const StudentProfile = () => {
                     <dt className="text-sm font-medium text-gray-500">Profile Created</dt>
                     <dd className="mt-1 text-gray-900">{formatDate(student.createdAt)}</dd>
                   </div>
-                )}
-              </dl>
+                )}              </dl>
+            </div>
+
+            {/* Add Project Button */}
+            <div className="mt-8 border-t pt-6">
+              <div className="flex justify-center">
+                <Link 
+                  href="/student/add-project"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg flex items-center transition duration-300 shadow-md hover:shadow-lg"
+                >
+                  <FaPlus className="mr-2" />
+                  Add New Project
+                </Link>
+              </div>
             </div>
           </div>
         </div>

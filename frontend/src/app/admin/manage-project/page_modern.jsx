@@ -36,11 +36,10 @@ const ManageProject = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedProjects, setSelectedProjects] = useState([]);
   const router = useRouter();
-
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/project/getall");
+      const response = await axios.get("http://localhost:5000/project/admin/getall");
       setProjects(response.data);
       setFilteredProjects(response.data);
     } catch (error) {
@@ -53,10 +52,9 @@ const ManageProject = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    
-    const loadProjects = async () => {
+      const loadProjects = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/project/getall", {
+        const response = await axios.get("http://localhost:5000/project/admin/getall", {
           signal: controller.signal
         });
         setProjects(response.data);

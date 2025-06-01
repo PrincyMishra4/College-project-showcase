@@ -17,13 +17,48 @@ router.post('/add', (req, res) => {
 });
 
 router.get('/getall', (req, res) => {
+    // Get all projects for admin, only approved for public
+    const isAdmin = req.headers['user-role'] === 'admin';
+    
+    // If admin, get all projects, otherwise only get approved ones
+    const query = isAdmin ? {} : { approved: true };
+    
+    Model.find(query)
+        .then((result) => {
+            res.status(200).json(result);
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+
+// Get all projects (admin only)
+router.get('/admin/getall', (req, res) => {
     Model.find()
         .then((result) => {
             res.status(200).json(result);
         }).catch((err) => {
             console.log(err);
             res.status(500).json(err);
+        });
+});
 
+// Get projects by department
+router.get('/getbydepartment/:department', (req, res) => {
+    // Get all projects for admin, only approved for public
+    const isAdmin = req.headers['user-role'] === 'admin';
+    
+    // If admin, get all projects by department, otherwise only get approved ones
+    const query = isAdmin 
+        ? { department: req.params.department }
+        : { department: req.params.department, approved: true };
+    
+    Model.find(query)
+        .then((result) => {
+            res.status(200).json(result);
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
         });
 });
 

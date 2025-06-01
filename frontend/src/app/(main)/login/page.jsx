@@ -1,46 +1,52 @@
 'use client';
-import axios from 'axios';
-import { useFormik } from 'formik'
-import Link from 'next/link'
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
+import { useAuth } from '../../../context/AuthContext';
 
 const ISSERVER = typeof window === "undefined";
 
-const Login = () => {
-    const [showPassword, setShowPassword] = useState(false);
+const Login = () => {    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const { login } = useAuth();
+
+    // Form validation schema
+    const loginSchema = Yup.object().shape({
+        email: Yup.string()
+            .email('Please enter a valid email')
+            .required('Email is required'),
+        password: Yup.string()
+            .required('Password is required')
+    });
 
     const loginform = useFormik({
         initialValues: {
             email: '',
             password: ''
         },
-        onSubmit: (values, { resetForm }) => {
-            console.log(values);
-            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/authenticate`, values)
-                .then((result) => {
-                    toast.success('Login Successful');
-                    console.log(result.data);
-                    !ISSERVER && localStorage.setItem('token', result.data.token);
-                    document.cookie = 'token=' + result.data.token;
-                    if (result.data.role === 'admin') {
-                        !ISSERVER && localStorage.setItem('admin', JSON.stringify(result.data));
-                        router.push('/admin');
-                    } else {
-                        !ISSERVER && localStorage.setItem('user', JSON.stringify(result.data));
-                        router.push('/');
-                    }       
-                }).catch((err) => {
-                    console.log(err);
-                    toast.error('Invalid credentials');
-                });
-            resetForm();
+        validationSchema: loginSchema,
+        onSubmit: async (values, { resetForm }) => {
+            setIsLoading(true);
+            try {
+                const success = await login(values.email, values.password);
+                if (success) {
+                    // The login function in AuthContext already handles redirection based on user role
+                    // No need to redirect here as it's handled in the AuthContext
+                }
+            } catch (error) {
+                // Error handling is done within the login function in AuthContext
+                console.error("Login error:", error);
+            } finally {
+                setIsLoading(false);
+            }
         },
-    })
+    });
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900 flex items-center justify-center p-4">
@@ -126,14 +132,18 @@ const Login = () => {
                                         </div>
                                         <input
                                             id='email'
+                                            name='email'
                                             type="email"
                                             onChange={loginform.handleChange}
+                                            onBlur={loginform.handleBlur}
                                             value={loginform.values.email}
-                                            className="input-modern pl-10"
+                                            className={`input-modern pl-10 ${loginform.touched.email && loginform.errors.email ? 'border-red-500' : ''}`}
                                             placeholder="Enter your email"
-                                            required
                                         />
                                     </div>
+                                    {loginform.touched.email && loginform.errors.email && (
+                                        <p className="mt-1 text-sm text-red-500">{loginform.errors.email}</p>
+                                    )}
                                 </motion.div>
 
                                 {/* Password Field */}
@@ -151,12 +161,13 @@ const Login = () => {
                                         </div>
                                         <input
                                             id='password'
+                                            name='password'
                                             type={showPassword ? "text" : "password"}
                                             onChange={loginform.handleChange}
+                                            onBlur={loginform.handleBlur}
                                             value={loginform.values.password}
-                                            className="input-modern pl-10 pr-10"
+                                            className={`input-modern pl-10 pr-10 ${loginform.touched.password && loginform.errors.password ? 'border-red-500' : ''}`}
                                             placeholder="Enter your password"
-                                            required
                                         />
                                         <button
                                             type="button"
@@ -170,6 +181,9 @@ const Login = () => {
                                             )}
                                         </button>
                                     </div>
+                                    {loginform.touched.password && loginform.errors.password && (
+                                        <p className="mt-1 text-sm text-red-500">{loginform.errors.password}</p>
+                                    )}
                                 </motion.div>
 
                                 {/* Forgot Password */}
@@ -195,12 +209,13 @@ const Login = () => {
                                 >
                                     <motion.button
                                         type="submit"
-                                        className="btn-modern w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-3 px-6 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] focus-ring"
+                                        disabled={isLoading}
+                                        className="btn-modern w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-3 px-6 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] focus-ring disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
                                         whileTap={{ scale: 0.98 }}
                                     >
                                         <span className="flex items-center justify-center">
-                                            Sign In
-                                            <ArrowRight className="ml-2 h-5 w-5" />
+                                            {isLoading ? 'Signing in...' : 'Sign In'}
+                                            {!isLoading && <ArrowRight className="ml-2 h-5 w-5" />}
                                         </span>
                                     </motion.button>
                                 </motion.div>
@@ -221,6 +236,15 @@ const Login = () => {
                                             Create an account
                                         </Link>
                                     </p>
+                                    <p className="text-sm text-secondary-600 dark:text-secondary-400">
+                                        Student login?{' '}
+                                        <Link
+                                            href="/student-login"
+                                            className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+                                        >
+                                            login as student
+                                        </Link>
+                                    </p>
                                 </motion.div>
                             </div>
                         </div>
@@ -228,7 +252,7 @@ const Login = () => {
                 </form>
             </motion.div>
         </div>
-    )
-}
+    );
+};
 
 export default Login;

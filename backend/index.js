@@ -1,9 +1,13 @@
 //importing express
 const express = require('express');
+require('dotenv').config();
 const UserRouter = require('./routers/userRouter');
 const ProjectRouter = require('./routers/projectRouter');
 const studentRouter = require('./routers/studentRouter');
 const cors = require('cors');
+
+// Import database connection
+require('./connection');
 
 // initialize express 
 const app = express();
@@ -11,7 +15,7 @@ const port = 5000;
 
 app.use(cors());
 app.use(express.json());
-app.use('/user', UserRouter)
+app.use('/user', require('./routers/userRouter'));
 app.use('/project', ProjectRouter)
 app.use('/student', studentRouter)
 
@@ -33,4 +37,10 @@ app.get('/getall', (req, res) => {
     res.send('Response from getall');
 });
 
-app.listen(port, () => { console.log('server started') });
+app.listen(port, () => { 
+    console.log(`Server started on http://localhost:${port}`);
+    console.log('Available endpoints:');
+    console.log('- GET /user/getall');
+    console.log('- POST /user/add');
+    console.log('- DELETE /user/delete/:id');
+});

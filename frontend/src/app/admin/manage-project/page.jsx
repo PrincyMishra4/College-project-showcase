@@ -36,11 +36,10 @@ const ManageProject = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedProjects, setSelectedProjects] = useState([]);
   const router = useRouter();
-
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/project/getall");
+      const response = await axios.get("http://localhost:5000/project/admin/getall");
       setProjects(response.data);
       setFilteredProjects(response.data);
     } catch (error) {
@@ -50,13 +49,11 @@ const ManageProject = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     const controller = new AbortController();
-    
-    const loadProjects = async () => {
+      const loadProjects = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/project/getall", {
+        const response = await axios.get("http://localhost:5000/project/admin/getall", {
           signal: controller.signal
         });
         setProjects(response.data);
@@ -71,7 +68,7 @@ const ManageProject = () => {
       }
     };
     
-    loadProjects();
+    fetchProjects();
     
     return () => {
       controller.abort();
@@ -89,16 +86,14 @@ const ManageProject = () => {
         project.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.category?.toLowerCase().includes(searchTerm.toLowerCase())
       );
-    }
-
-    // Apply status filter
+    }        // Apply status filter
     if (filterStatus !== "all") {
       filtered = filtered.filter(project => {
         switch (filterStatus) {
           case "approved":
-            return project.isApproved;
+            return project.approved;
           case "pending":
-            return !project.isApproved;
+            return !project.approved;
           default:
             return true;
         }
@@ -127,20 +122,19 @@ const ManageProject = () => {
   const handleUpdate = (id) => {
     router.push(`/admin/update-project/${id}`);
   };
-
   const handleApprove = async (id) => {
     try {
       const project = projects.find(p => p._id === id);
-      const newStatus = !project.isApproved;
+      const newStatus = !project.approved;
 
       await axios.put(`http://localhost:5000/project/update/${id}`, {
-        isApproved: newStatus
+        approved: newStatus
       });
       
       toast.success(`Project ${newStatus ? 'approved' : 'unapproved'} successfully`);
       
       setProjects(projects.map(p => 
-        p._id === id ? { ...p, isApproved: newStatus } : p
+        p._id === id ? { ...p, approved: newStatus } : p
       ));
     } catch (error) {
       console.error("Error updating approval status:", error);
@@ -367,14 +361,13 @@ const ManageProject = () => {
                     />
                   </div>
 
-                  {/* Status Badge */}
-                  <div className="absolute top-4 right-4 z-10">
+                  {/* Status Badge */}                  <div className="absolute top-4 right-4 z-10">
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                      project.isApproved
+                      project.approved
                         ? 'bg-success-100 text-success-800 dark:bg-success-900/50 dark:text-success-300'
                         : 'bg-warning-100 text-warning-800 dark:bg-warning-900/50 dark:text-warning-300'
                     }`}>
-                      {project.isApproved ? (
+                      {project.approved ? (
                         <>
                           <Check className="w-3 h-3 mr-1" />
                           Approved
@@ -488,16 +481,15 @@ const ManageProject = () => {
                         <Edit className="w-4 h-4" />
                         Edit
                       </button>
-                      
-                      <button
+                        <button
                         onClick={() => handleApprove(project._id)}
                         className={`btn-modern flex items-center gap-2 flex-1 justify-center text-sm ${
-                          project.isApproved
+                          project.approved
                             ? 'bg-warning-500 hover:bg-warning-600 text-white'
                             : 'bg-success-500 hover:bg-success-600 text-white'
                         }`}
                       >
-                        {project.isApproved ? (
+                        {project.approved ? (
                           <>
                             <X className="w-4 h-4" />
                             Unapprove

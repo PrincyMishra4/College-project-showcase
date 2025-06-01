@@ -6,48 +6,46 @@ import axios from 'axios'
 import { FiArrowRight, FiSearch, FiGrid, FiList, FiLoader } from 'react-icons/fi'
 
 // Department data remains the same
-const departments = [
-  {
+const departments = [  {
     id: 1,
     name: 'Computer Science',
     description: 'Exploring the fundamentals of computing, programming languages, and software development.',
     projectCount: 24,
-    image: '/images/departments/cs.jpg'
-  },
-  {
+    image: "/computer science.webp"
+  },  {
     id: 2,
     name: 'Electrical Engineering',
     description: 'Focusing on electrical systems, circuits, and electronics applications.',
     projectCount: 18,
-    image: '/images/departments/ee.jpg'
+    image: '/electrical engineering.jpg'
   },
   {
     id: 3,
     name: 'Mechanical Engineering',
     description: 'Studying mechanics, dynamics, and mechanical systems design.',
     projectCount: 15,
-    image: '/images/departments/me.jpg'
+    image: '/mechanical engineering.jpg'
   },
   {
     id: 4,
     name: 'Civil Engineering',
     description: 'Designing infrastructure, buildings, and environmental systems.',
     projectCount: 12,
-    image: '/images/departments/ce.jpg'
+    image: '/civil engineering.jpg'
   },
   {
     id: 5,
     name: 'Business Administration',
     description: 'Developing management skills, business strategies, and entrepreneurship.',
     projectCount: 20,
-    image: '/images/departments/ba.jpg'
+    image: '/business administration.jpg'
   },
   {
     id: 6,
     name: 'Fine Arts',
     description: 'Creating visual arts, design, and multimedia projects.',
     projectCount: 16,
-    image: '/images/departments/fa.jpg'
+    image: '/fine arts.jpg'
   }
 ];
 
@@ -67,13 +65,13 @@ const BrowseDepartment = () => {
         const response = await axios.get('http://localhost:5000/project/getall');
         const projects = response.data;
         
-        // Group projects by category (department)
+        // Group projects by department (using department field)
         const projectsByDepartment = {};
         departments.forEach(dept => {
           // Find projects matching this department (case-insensitive)
           const deptProjects = projects.filter(project => 
-            project.category?.toLowerCase() === dept.name.toLowerCase() ||
-            project.category?.toLowerCase().includes(dept.name.toLowerCase())
+            project.department?.toLowerCase() === dept.name.toLowerCase() ||
+            project.department?.toLowerCase().includes(dept.name.toLowerCase())
           );
           projectsByDepartment[dept.id] = deptProjects;
         });
@@ -292,7 +290,7 @@ const BrowseDepartment = () => {
                             </div>
                             
                             <Link 
-                              href={`/browse-project?category=${encodeURIComponent(dept.name)}`}
+                              href={`/browse-project?department=${encodeURIComponent(dept.name)}`}
                               className="flex items-center justify-center text-blue-600 text-sm font-medium mt-4 bg-blue-50 hover:bg-blue-100 py-2 rounded-lg transition-colors"
                             >
                               <span>View all {departmentProjects[dept.id].length} projects</span>
@@ -393,7 +391,7 @@ const BrowseDepartment = () => {
                           
                           <div className="text-center mt-4">
                             <Link 
-                              href={`/browse-project?category=${encodeURIComponent(dept.name)}`}
+                              href={`/browse-project?department=${encodeURIComponent(dept.name)}`}
                               className="inline-flex items-center text-blue-600 text-sm font-medium bg-white px-4 py-2 rounded-lg border border-blue-200 hover:bg-blue-50 transition-colors"
                             >
                               <span>View all {departmentProjects[dept.id].length} projects</span>

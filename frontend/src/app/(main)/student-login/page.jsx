@@ -50,7 +50,6 @@ const StudentLogin = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -59,22 +58,32 @@ const StudentLogin = () => {
       setErrors({});
       
       try {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/user/authenticate`, formData);
-        toast.success('Student Login Successful');
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/student/authenticate`, formData);
         
-        !ISSERVER && localStorage.setItem('token', response.data.token);
-        document.cookie = 'token=' + response.data.token;
-        
-        if (response.data.role === 'student') {
-          !ISSERVER && localStorage.setItem('student', JSON.stringify(response.data));
-          router.push('/student/add-project');
+        // Check if response and response.data exist
+        if (response && response.data) {
+          toast.success('Student Login Successful');
+          
+          !ISSERVER && localStorage.setItem('token', response.data.token);
+          document.cookie = 'token=' + response.data.token;
+          
+          if (response.data.role === 'student') {
+            !ISSERVER && localStorage.setItem('student', JSON.stringify(response.data));
+            router.push('/student/student-profile');
+          } else {
+            !ISSERVER && localStorage.setItem('user', JSON.stringify(response.data));
+            router.push('/');
+          }
         } else {
-          !ISSERVER && localStorage.setItem('user', JSON.stringify(response.data));
-          router.push('/');
+          throw new Error('Invalid response from server');
         }
       } catch (error) {
         console.error(error);
-        setErrors({ auth: 'Invalid credentials. Please try again.' });
+        if (error.response && error.response.status === 401) {
+          setErrors({ auth: 'Invalid credentials. Please try again.' });
+        } else {
+          setErrors({ auth: 'Login failed. Please try again.' });
+        }
         toast.error('Login failed');
       } finally {
         setLoading(false);

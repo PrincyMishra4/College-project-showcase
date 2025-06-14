@@ -6,6 +6,22 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, GraduationCap, BookOpen, Sparkles } from 'lucide-react';
+import { ClientParticlesBackground } from '@/components/ParticlesBackground';
+import { ClientOnly, isClient } from '@/utils/clientUtils';
+
+// Replace with consistent client check
+const getFromLocalStorage = (key, defaultValue = null) => {
+  if (isClient) {
+    return localStorage.getItem(key) || defaultValue;
+  }
+  return defaultValue;
+};
+
+const setInLocalStorage = (key, value) => {
+  if (isClient) {
+    localStorage.setItem(key, value);
+  }
+};
 
 const ISSERVER = typeof window === "undefined";
 
@@ -93,58 +109,12 @@ const StudentLogin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-accent-50 via-white to-secondary-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900 flex items-center justify-center p-4">
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-accent-400/20 to-secondary-400/20 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-        <motion.div
-          className="absolute -bottom-10 -left-10 w-32 h-32 bg-gradient-to-tr from-primary-400/20 to-accent-400/20 rounded-full blur-2xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            rotate: [360, 180, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-        <motion.div
-          className="absolute top-1/3 left-1/4 w-2 h-2 bg-accent-400 rounded-full"
-          animate={{
-            y: [0, -20, 0],
-            opacity: [0.5, 1, 0.5],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute top-2/3 right-1/3 w-1 h-1 bg-secondary-400 rounded-full"
-          animate={{
-            y: [0, -15, 0],
-            opacity: [0.3, 0.8, 0.3],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-        />
-      </div>
+      {/* Replace with consistent background elements */}
+      <ClientParticlesBackground 
+        particleCount={12} 
+        seed={789}
+        particleClassName="bg-accent-400" 
+      />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

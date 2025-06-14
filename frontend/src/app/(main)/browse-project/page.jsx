@@ -5,6 +5,11 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, ArrowRight, Calendar, User, Grid, List, Eye, ExternalLink, Github } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import { ClientParticlesBackground } from '@/components/ParticlesBackground';
+import { ClientOnly, isClient } from '@/utils/clientUtils';
+
+// Define base API URL with environment handling
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 const BrowseProject = () => {
   const searchParams = useSearchParams();
@@ -26,8 +31,8 @@ const BrowseProject = () => {
     
     // If department parameter exists, fetch only projects from that department
     const url = departmentParam 
-      ? `http://localhost:5000/project/getbydepartment/${encodeURIComponent(departmentParam)}`
-      : 'http://localhost:5000/project/getall';
+      ? `${API_BASE_URL}/project/getbydepartment/${encodeURIComponent(departmentParam)}`
+      : `${API_BASE_URL}/project/getall`;
       
     axios.get(url)
       .then((res) => {
@@ -291,33 +296,13 @@ const BrowseProject = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900">
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute -top-20 -right-20 w-80 h-80 bg-gradient-to-br from-primary-400/10 to-accent-400/10 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.1, 1],
-            rotate: [0, 90, 180],
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-        <motion.div
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-tr from-accent-400/10 to-primary-400/10 rounded-full blur-3xl"
-          animate={{
-            scale: [1.1, 1, 1.1],
-            rotate: [180, 90, 0],
-          }}
-          transition={{
-            duration: 35,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-      </div>
+      {/* Replace random position background elements with consistent ParticlesBackground */}
+      <ClientParticlesBackground 
+        particleCount={6}
+        seed={123} 
+        particleClassName="bg-primary-400/10"
+        particleSize="w-20 h-20"
+      />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Header Section */}
@@ -501,11 +486,13 @@ const BrowseProject = () => {
         {/* Loading State */}
         {loading ? (
           <div className="flex justify-center items-center py-20">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full"
-            />
+            <ClientOnly>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full"
+              />
+            </ClientOnly>
           </div>
         ) : (
           /* Projects Display */

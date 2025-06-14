@@ -8,10 +8,10 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
+import { ClientParticlesBackground } from '@/components/ParticlesBackground';
 
-const ISSERVER = typeof window === "undefined";
-
-const Login = () => {    const [showPassword, setShowPassword] = useState(false);
+const Login = () => {
+    const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const { login } = useAuth();
@@ -50,33 +50,13 @@ const Login = () => {    const [showPassword, setShowPassword] = useState(false)
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900 flex items-center justify-center p-4">
-            {/* Background decorations */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <motion.div
-                    className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-primary-400/20 to-accent-400/20 rounded-full blur-3xl"
-                    animate={{
-                        scale: [1, 1.2, 1],
-                        rotate: [0, 180, 360],
-                    }}
-                    transition={{
-                        duration: 20,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                />
-                <motion.div
-                    className="absolute -bottom-10 -left-10 w-60 h-60 bg-gradient-to-tr from-accent-400/20 to-primary-400/20 rounded-full blur-3xl"
-                    animate={{
-                        scale: [1.2, 1, 1.2],
-                        rotate: [360, 180, 0],
-                    }}
-                    transition={{
-                        duration: 25,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                />
-            </div>
+            {/* Replace with consistent background elements */}
+            <ClientParticlesBackground 
+              particleCount={8} 
+              seed={321}
+              particleClassName="bg-primary-400/20" 
+              particleSize="w-40 h-40"
+            />
 
             <motion.div
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}

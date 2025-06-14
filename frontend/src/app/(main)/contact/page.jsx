@@ -1,7 +1,9 @@
 'use client';
 import React, { useState } from 'react';
-import { MapPin, Mail, Phone, Facebook, Twitter, Linkedin, Instagram, GitHub, ChevronDown, ChevronUp } from 'react-feather'; // Modern icon library
+import { MapPin, Mail, Phone, Facebook, Twitter, Linkedin, Instagram, GitHub, ChevronDown, ChevronUp } from 'react-feather'; 
 import { motion } from 'framer-motion';
+import { ClientOnly } from '@/utils/clientUtils';
+import { ClientParticlesBackground } from '@/components/ParticlesBackground';
 
 // Animation variants
 const fadeIn = {
@@ -88,7 +90,14 @@ const Contact = () => {
   ];
 
   return (
-    <section className="bg-white dark:bg-neutral-900 py-16 sm:py-24">
+    <section className="bg-white dark:bg-neutral-900 py-16 sm:py-24 relative">
+      {/* Add consistent particles for animation */}
+      <ClientParticlesBackground 
+        particleCount={15} 
+        seed={654} 
+        particleClassName="bg-blue-400/20" 
+      />
+      
       <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto">
         {/* Header */}
         <motion.div 

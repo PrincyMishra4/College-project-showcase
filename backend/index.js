@@ -15,7 +15,7 @@ const port = 5000;
 
 app.use(cors());
 app.use(express.json());
-app.use('/user', require('./routers/userRouter'));
+app.use('/user', UserRouter)
 app.use('/project', ProjectRouter)
 app.use('/student', studentRouter)
 

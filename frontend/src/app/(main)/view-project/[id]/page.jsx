@@ -20,6 +20,11 @@ import {
   Share,
   Download
 } from 'lucide-react';
+import { ClientParticlesBackground } from '@/components/ParticlesBackground';
+import { ClientOnly } from '@/utils/clientUtils';
+
+// Define base API URL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 const ViewProject = () => {
   const { id } = useParams();
@@ -32,7 +37,7 @@ const ViewProject = () => {
     const fetchProjectData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:5000/project/getbyid/${id}`);
+        const response = await axios.get(`${API_BASE_URL}/project/getbyid/${id}`);
         console.log(response.data);
         
         setProject(response.data);
@@ -40,7 +45,7 @@ const ViewProject = () => {
         // Fetch student details if developedby is available
         if (response.data.developedby) {
           try {
-            const studentResponse = await axios.get(`http://localhost:5000/student/getbyid/${response.data.developedby}`);
+            const studentResponse = await axios.get(`${API_BASE_URL}/student/getbyid/${response.data.developedby}`);
             console.log(studentResponse.data);
             
             setDeveloper(studentResponse.data);
@@ -133,6 +138,13 @@ const ViewProject = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900">
+      {/* Add consistent particle background */}
+      <ClientParticlesBackground 
+        particleCount={10} 
+        seed={876} 
+        particleClassName="bg-primary-400/10" 
+      />
+      
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Back Button */}
         <motion.div

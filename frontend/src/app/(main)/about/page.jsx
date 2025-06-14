@@ -16,6 +16,8 @@ import {
   Code,
   Building,
 } from "lucide-react"
+import { ClientParticlesBackground } from "@/components/ParticlesBackground"
+import { ClientOnly } from "@/utils/clientUtils"
 
 const AboutPage = () => {
   const containerRef = useRef(null)
@@ -98,77 +100,12 @@ const AboutPage = () => {
       ref={containerRef}
       className="relative min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-hidden"
     >
-      {/* Enhanced Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Primary floating orbs */}
-        <motion.div
-          className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"
-          animate={floatingAnimation}
-        />
-        <motion.div
-          className="absolute top-1/3 -left-20 w-80 h-80 bg-gradient-to-r from-green-400/20 to-blue-400/20 rounded-full blur-3xl"
-          animate={{
-            y: [20, -20, 20],
-            x: [-10, 10, -10],
-            transition: {
-              duration: 8,
-              ease: "easeInOut",
-              repeat: Number.POSITIVE_INFINITY,
-            },
-          }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-1/4 w-60 h-60 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
-          animate={pulseAnimation}
-        />
-
-        {/* Additional decorative elements */}
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-cyan-400/15 to-blue-400/15 rounded-full blur-2xl"
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.3, 0.6, 0.3],
-            transition: {
-              duration: 10,
-              ease: "easeInOut",
-              repeat: Number.POSITIVE_INFINITY,
-            },
-          }}
-        />
-
-        {/* Geometric patterns */}
-        <div className="absolute inset-0 opacity-5">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%239C92AC' fillOpacity='0.1'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
-        </div>
-
-        {/* Floating particles */}
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-blue-400/30 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [-20, 20],
-              opacity: [0.3, 0.8, 0.3],
-              scale: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 4 + Math.random() * 3,
-              repeat: Number.POSITIVE_INFINITY,
-              repeatType: "reverse",
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
-      </div>
+      {/* Replace random position animated elements with ClientParticlesBackground */}
+      <ClientParticlesBackground
+        particleCount={15}
+        seed={456}
+        particleClassName="bg-blue-400/30"
+      />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         {/* Enhanced Hero Section */}

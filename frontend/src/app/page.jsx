@@ -219,7 +219,35 @@ const Section = ({ children, className }) => {
 const HomePage = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoplay, setIsAutoplay] = useState(true)
+  const [isClient, setIsClient] = useState(false)
+  const [statisticsParticles, setStatisticsParticles] = useState([])
+  const [ctaParticles, setCtaParticles] = useState([])
   const totalSlides = heroImages.length
+
+  // Initialize client-side only values
+  useEffect(() => {
+    setIsClient(true)
+
+    // Generate particle positions for statistics section (6 particles)
+    setStatisticsParticles(
+      Array.from({ length: 6 }, () => ({
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        delay: Math.random() * 2,
+        duration: 3 + Math.random() * 2,
+      }))
+    )
+
+    // Generate particle positions for CTA section (12 particles)
+    setCtaParticles(
+      Array.from({ length: 12 }, () => ({
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        delay: Math.random() * 3,
+        duration: 4 + Math.random() * 3,
+      }))
+    )
+  }, [])
 
   // Handle carousel navigation
   const nextSlide = () => {
@@ -737,24 +765,24 @@ const HomePage = () => {
               transition={{ duration: 15, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
             />
 
-            {/* Floating particles */}
-            {[...Array(6)].map((_, i) => (
+            {/* Client-side only floating particles */}
+            {isClient && statisticsParticles.map((particle, i) => (
               <motion.div
                 key={i}
                 className="absolute w-2 h-2 bg-white/30 rounded-full"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
+                  left: `${particle.left}%`,
+                  top: `${particle.top}%`,
                 }}
                 animate={{
                   y: [-20, 20],
                   opacity: [0.3, 0.8, 0.3],
                 }}
                 transition={{
-                  duration: 3 + Math.random() * 2,
+                  duration: particle.duration,
                   repeat: Number.POSITIVE_INFINITY,
                   repeatType: "reverse",
-                  delay: Math.random() * 2,
+                  delay: particle.delay,
                 }}
               />
             ))}
@@ -1316,20 +1344,17 @@ const HomePage = () => {
 
             {/* Animated grid */}
             <div className="absolute inset-0 opacity-10">
-              <div
-                className="absolute inset-0"
- 
-              />
+              <div className="absolute inset-0" />
             </div>
 
-            {/* Floating particles */}
-            {[...Array(12)].map((_, i) => (
+            {/* Client-side only floating particles */}
+            {isClient && ctaParticles.map((particle, i) => (
               <motion.div
                 key={i}
                 className="absolute w-1 h-1 bg-white/40 rounded-full"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
+                  left: `${particle.left}%`,
+                  top: `${particle.top}%`,
                 }}
                 animate={{
                   y: [-30, 30],
@@ -1337,10 +1362,10 @@ const HomePage = () => {
                   scale: [0.5, 1, 0.5],
                 }}
                 transition={{
-                  duration: 4 + Math.random() * 3,
+                  duration: particle.duration,
                   repeat: Number.POSITIVE_INFINITY,
                   repeatType: "reverse",
-                  delay: Math.random() * 3,
+                  delay: particle.delay,
                 }}
               />
             ))}
@@ -1670,4 +1695,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage;
+export default HomePage

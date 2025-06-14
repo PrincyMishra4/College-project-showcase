@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
                     setUser(null);
                 }
             } catch (error) {
-                console.error('Auth check error:', error);
+                console.log('Auth check error:', error);
                 
                 // More detailed error handling
                 if (error.response) {
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
                 }
                 
                 // Clear authentication on error
-                localStorage.removeItem('token');
+                // localStorage.removeItem('token');
                 setUser(null);
             } finally {
                 setLoading(false);

@@ -118,7 +118,7 @@ const Navbar = () => {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-bold text-xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                    MindGallery
+                    College Project Showcase
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Creative Projects Hub</span>
                 </div>

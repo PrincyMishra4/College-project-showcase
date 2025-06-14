@@ -109,7 +109,7 @@ const ViewProject = () => {
           </div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Project Not Found</h2>
           <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md">
-            The project you're looking for doesn't exist or has been removed.
+            The project you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
           <Link 
             href="/browse-project" 

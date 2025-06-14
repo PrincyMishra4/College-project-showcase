@@ -421,7 +421,7 @@ const BrowseDepartment = () => {
               </svg>
             </div>
             <h3 className="text-xl font-medium text-gray-800 mb-2">No departments found</h3>
-            <p className="text-gray-500 mb-6">We couldn't find any departments matching your search</p>
+            <p className="text-gray-500 mb-6">We couldn&apos;t find any departments matching your search</p>
             <button 
               onClick={() => setSearchTerm('')}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"

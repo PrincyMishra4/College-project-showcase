@@ -152,8 +152,9 @@ const AboutPage = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              Building bridges between academic brilliance and industry opportunities.              <span className="block mt-2 text-blue-600 dark:text-blue-400 font-semibold">
-                ✨ Wherere innovation meets opportunity
+              Building bridges between academic brilliance and industry opportunities.
+              <span className="block mt-2 text-blue-600 dark:text-blue-400 font-semibold">
+                ✨ Where innovation meets opportunity
               </span>
             </motion.p>
           </motion.div>

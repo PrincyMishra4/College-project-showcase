@@ -1,53 +1,67 @@
-'use client';
-import React, { useState } from 'react';
-import { MapPin, Mail, Phone, Facebook, Twitter, Linkedin, Instagram, GitHub, ChevronDown, ChevronUp } from 'react-feather'; 
-import { motion } from 'framer-motion';
-import { ClientOnly } from '@/utils/clientUtils';
-import { ClientParticlesBackground } from '@/components/ParticlesBackground';
+"use client";
+import React, { useState } from "react";
+import {
+  MapPin,
+  Mail,
+  Phone,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+  GitHub,
+  ChevronDown,
+  ChevronUp,
+} from "react-feather";
+import { motion } from "framer-motion";
+import { ClientOnly } from "@/utils/clientUtils";
+import { ClientParticlesBackground } from "@/components/ParticlesBackground";
 
 // Animation variants
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  exit: { opacity: 0, y: 20 }
+  exit: { opacity: 0, y: 20 },
 };
 
 const containerVariants = {
   initial: { opacity: 0 },
-  animate: { 
+  animate: {
     opacity: 1,
-    transition: { 
+    transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
+      delayChildren: 0.2,
+    },
+  },
 };
 
 const itemVariants = {
   initial: { opacity: 0, y: 20 },
-  animate: { 
-    opacity: 1, 
+  animate: {
+    opacity: 1,
     y: 0,
-    transition: { duration: 0.5 }
-  }
+    transition: { duration: 0.5 },
+  },
 };
 
 const pulseAnimation = {
   initial: { scale: 1 },
-  animate: { 
+  animate: {
     scale: [1, 1.05, 1],
-    transition: { 
+    transition: {
       repeat: Infinity,
-      repeatType: "reverse", 
-      duration: 2
-    }
-  }
+      repeatType: "reverse",
+      duration: 2,
+    },
+  },
 };
 
 const ContactCard = ({ icon, title, children }) => (
-  <motion.div 
+  <motion.div
     variants={itemVariants}
-    whileHover={{ scale: 1.03, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+    whileHover={{
+      scale: 1.03,
+      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+    }}
     className="flex gap-4 p-5 rounded-lg transition-all hover:shadow-md hover:bg-gray-50 dark:hover:bg-neutral-800"
   >
     <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900">
@@ -64,7 +78,7 @@ const ContactCard = ({ icon, title, children }) => (
 
 const Contact = () => {
   const [activeTab, setActiveTab] = useState(null);
-  
+
   const toggleTab = (index) => {
     setActiveTab(activeTab === index ? null : index);
   };
@@ -73,34 +87,38 @@ const Contact = () => {
   const faqs = [
     {
       question: "How can I submit my project to be showcased?",
-      answer: "To submit your project, log in to your student account and use the project submission form. Make sure to include details about your project, relevant images, and any links to GitHub or live demos."
+      answer:
+        "To submit your project, log in to your student account and use the project submission form. Make sure to include details about your project, relevant images, and any links to GitHub or live demos.",
     },
     {
       question: "What are the requirements for project submissions?",
-      answer: "Your project should be complete with documentation, source code, and preferably a demo. It should demonstrate your technical skills and knowledge acquired during your college courses."
+      answer:
+        "Your project should be complete with documentation, source code, and preferably a demo. It should demonstrate your technical skills and knowledge acquired during your college courses.",
     },
     {
       question: "When is the next project showcase event?",
-      answer: "Our next project showcase event is scheduled for May 15, 2025. Check the events calendar for more upcoming showcase opportunities and deadlines."
+      answer:
+        "Our next project showcase event is scheduled for May 15, 2025. Check the events calendar for more upcoming showcase opportunities and deadlines.",
     },
     {
       question: "Can I update my project after submission?",
-      answer: "Yes, you can update your project details, images, and links at any time through your student dashboard. Make sure to keep your information current."
-    }
+      answer:
+        "Yes, you can update your project details, images, and links at any time through your student dashboard. Make sure to keep your information current.",
+    },
   ];
 
   return (
     <section className="bg-white dark:bg-neutral-900 py-16 sm:py-24 relative">
       {/* Add consistent particles for animation */}
-      <ClientParticlesBackground 
-        particleCount={15} 
-        seed={654} 
-        particleClassName="bg-blue-400/20" 
+      <ClientParticlesBackground
+        particleCount={15}
+        seed={654}
+        particleClassName="bg-blue-400/20"
       />
-      
+
       <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto">
         {/* Header */}
-        <motion.div 
+        <motion.div
           className="mb-12 text-center"
           initial="initial"
           animate="animate"
@@ -113,14 +131,16 @@ const Contact = () => {
             Contact Us
           </h1>
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Have questions? We're here to help and would love to hear from you.
+            We&apos;d love to hear from you! Whether you have questions about
+            our platform, need technical support, or want to learn more about
+            showcasing your projects, our team is here to help.{" "}
           </p>
         </motion.div>
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Map/Image */}
-          <motion.div 
+          <motion.div
             className="relative h-[400px] overflow-hidden rounded-2xl shadow-lg"
             initial="initial"
             animate="animate"
@@ -139,7 +159,7 @@ const Contact = () => {
           </motion.div>
 
           {/* Contact Information */}
-          <motion.div 
+          <motion.div
             className="space-y-8"
             initial="initial"
             animate="animate"
@@ -148,10 +168,10 @@ const Contact = () => {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
               Contact Information
             </h2>
-            
+
             <div className="grid grid-cols-1 gap-6">
               {/* Contact Cards with improved design */}
-              <motion.div 
+              <motion.div
                 className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-neutral-700"
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
@@ -163,17 +183,21 @@ const Contact = () => {
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Visit Our Campus</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                      Visit Our Campus
+                    </h3>
                     <address className="not-italic text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                      College of Technology and Innovation<br />
-                      300 Tech Campus Drive<br />
+                      College of Technology and Innovation
+                      <br />
+                      300 Tech Campus Drive
+                      <br />
                       Bangalore, Karnataka 560001
                     </address>
                   </div>
                 </div>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-neutral-700"
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
@@ -185,12 +209,20 @@ const Contact = () => {
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Email Us</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                      Email Us
+                    </h3>
                     <div className="space-y-1">
-                      <a href="mailto:admissions@college.edu" className="block text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                      <a
+                        href="mailto:admissions@college.edu"
+                        className="block text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
                         admissions@college.edu
                       </a>
-                      <a href="mailto:support@college.edu" className="block text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                      <a
+                        href="mailto:support@college.edu"
+                        className="block text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
                         support@college.edu
                       </a>
                     </div>
@@ -198,7 +230,7 @@ const Contact = () => {
                 </div>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-neutral-700"
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
@@ -210,12 +242,20 @@ const Contact = () => {
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Call Us</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                      Call Us
+                    </h3>
                     <div className="space-y-1">
-                      <a href="tel:+919876543210" className="block text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                      <a
+                        href="tel:+919876543210"
+                        className="block text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
                         +91 987-654-3210 (Admissions)
                       </a>
-                      <a href="tel:+919876543200" className="block text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                      <a
+                        href="tel:+919876543200"
+                        className="block text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
                         +91 987-654-3200 (General Inquiries)
                       </a>
                     </div>
@@ -223,7 +263,7 @@ const Contact = () => {
                 </div>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-neutral-700"
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
@@ -231,13 +271,26 @@ const Contact = () => {
                 <div className="flex p-5">
                   <div className="mr-5">
                     <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
-                      <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg
+                        className="w-5 h-5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Office Hours</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
+                      Office Hours
+                    </h3>
                     <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
                       <div className="flex justify-between">
                         <span>Monday - Friday:</span>
@@ -258,19 +311,30 @@ const Contact = () => {
             </div>
 
             {/* CTA Button */}
-            <motion.div 
+            <motion.div
               className="mt-10 pt-8 border-t border-gray-200 dark:border-gray-800"
               variants={itemVariants}
             >
-              <motion.a 
-                href="#contact-form" 
+              <motion.a
+                href="#contact-form"
                 className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 Send us a message
-                <svg className="ml-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                <svg
+                  className="ml-2 w-5 h-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
                 </svg>
               </motion.a>
             </motion.div>
@@ -278,7 +342,7 @@ const Contact = () => {
         </div>
 
         {/* Contact Form Section */}
-        <motion.div 
+        <motion.div
           className="mt-20 pt-16 border-t border-gray-200 dark:border-gray-800"
           initial="initial"
           animate="animate"
@@ -290,61 +354,64 @@ const Contact = () => {
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">
                 Get in Touch
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-8">
-                Have a question about our project showcase or need help with your submission? Fill out the form and we'll get back to you as soon as possible.
+              <p className="text-gray-600 mb-4">
+                Can&apos;t find what you&apos;re looking for? Send us a message
+                and we&apos;ll get back to you as soon as possible.
               </p>
 
-              <motion.div 
+              <motion.div
                 className="mb-8 overflow-hidden rounded-xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
               >
-                <img 
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop" 
-                  alt="Team collaboration" 
+                <img
+                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop"
+                  alt="Team collaboration"
                   className="w-full h-auto rounded-xl transform transition-transform duration-500 hover:scale-105"
                 />
               </motion.div>
 
               {/* Social Media Links */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Connect With Us</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  Connect With Us
+                </h3>
                 <div className="flex space-x-4">
-                  <motion.a 
-                    href="#" 
+                  <motion.a
+                    href="#"
                     className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-800 transition-colors"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     whileTap={{ scale: 0.9 }}
                   >
                     <Facebook size={18} />
                   </motion.a>
-                  <motion.a 
-                    href="#" 
+                  <motion.a
+                    href="#"
                     className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-800 transition-colors"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     whileTap={{ scale: 0.9 }}
                   >
                     <Twitter size={18} />
                   </motion.a>
-                  <motion.a 
-                    href="#" 
+                  <motion.a
+                    href="#"
                     className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-800 transition-colors"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     whileTap={{ scale: 0.9 }}
                   >
                     <Linkedin size={18} />
                   </motion.a>
-                  <motion.a 
-                    href="#" 
+                  <motion.a
+                    href="#"
                     className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-800 transition-colors"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     whileTap={{ scale: 0.9 }}
                   >
                     <Instagram size={18} />
                   </motion.a>
-                  <motion.a 
-                    href="#" 
+                  <motion.a
+                    href="#"
                     className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-800 transition-colors"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     whileTap={{ scale: 0.9 }}
@@ -356,7 +423,7 @@ const Contact = () => {
             </div>
 
             {/* Contact Form */}
-            <motion.div 
+            <motion.div
               className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100 dark:border-neutral-700"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -365,7 +432,10 @@ const Contact = () => {
               <form className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor="firstName"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       First Name
                     </label>
                     <input
@@ -377,7 +447,10 @@ const Contact = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label
+                      htmlFor="lastName"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
                       Last Name
                     </label>
                     <input
@@ -389,9 +462,12 @@ const Contact = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >
                     Email
                   </label>
                   <input
@@ -402,9 +478,12 @@ const Contact = () => {
                     placeholder="your.email@example.com"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    htmlFor="subject"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >
                     Subject
                   </label>
                   <input
@@ -415,9 +494,12 @@ const Contact = () => {
                     placeholder="How can we help?"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >
                     Message
                   </label>
                   <textarea
@@ -428,9 +510,9 @@ const Contact = () => {
                     placeholder="Your message here..."
                   ></textarea>
                 </div>
-                
+
                 <div>
-                  <motion.button 
+                  <motion.button
                     type="submit"
                     className="w-full px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                     whileHover={{ scale: 1.02 }}
@@ -445,7 +527,7 @@ const Contact = () => {
         </motion.div>
 
         {/* FAQ Section */}
-        <motion.div 
+        <motion.div
           className="mt-20 pt-16 border-t border-gray-200 dark:border-gray-800"
           initial="initial"
           animate="animate"
@@ -456,13 +538,14 @@ const Contact = () => {
               Frequently Asked Questions
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Get quick answers to common questions about our project showcase platform.
+              Get quick answers to common questions about our project showcase
+              platform.
             </p>
           </div>
 
           <div className="max-w-3xl mx-auto">
             {faqs.map((faq, index) => (
-              <motion.div 
+              <motion.div
                 key={index}
                 className="mb-4 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
                 initial={{ opacity: 0, y: 20 }}
@@ -473,19 +556,21 @@ const Contact = () => {
                   className="flex items-center justify-between w-full px-6 py-4 text-left bg-white dark:bg-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors"
                   onClick={() => toggleTab(index)}
                 >
-                  <span className="font-medium text-gray-900 dark:text-white">{faq.question}</span>
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {faq.question}
+                  </span>
                   {activeTab === index ? (
                     <ChevronUp className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   ) : (
                     <ChevronDown className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   )}
                 </button>
-                <motion.div 
+                <motion.div
                   className="overflow-hidden"
                   initial={{ height: 0 }}
-                  animate={{ 
-                    height: activeTab === index ? 'auto' : 0,
-                    opacity: activeTab === index ? 1 : 0
+                  animate={{
+                    height: activeTab === index ? "auto" : 0,
+                    opacity: activeTab === index ? 1 : 0,
                   }}
                   transition={{ duration: 0.3 }}
                 >
@@ -499,7 +584,7 @@ const Contact = () => {
         </motion.div>
 
         {/* Interactive Map */}
-        <motion.div 
+        <motion.div
           className="mt-20 pt-16 border-t border-gray-200 dark:border-gray-800"
           initial="initial"
           animate="animate"

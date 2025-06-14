@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { useInView } from "react-intersection-observer"
-import Link from "next/link"
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import Link from "next/link";
 import {
   Search,
   ArrowRight,
@@ -25,8 +25,8 @@ import {
   Zap,
   Star,
   TrendingUp,
-} from "lucide-react"
-import Navbar from "@/components/Navbar"
+} from "lucide-react";
+import Navbar from "@/components/Navbar";
 
 // Featured projects data (replace with actual data)
 const featuredProjects = [
@@ -36,7 +36,8 @@ const featuredProjects = [
     department: "Computer Science",
     image:
       "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
-    description: "A cutting-edge image recognition system using deep learning algorithms.",
+    description:
+      "A cutting-edge image recognition system using deep learning algorithms.",
     tags: ["AI", "Machine Learning", "Python"],
     likes: 234,
     views: 1520,
@@ -47,7 +48,8 @@ const featuredProjects = [
     department: "Architecture",
     image:
       "https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80",
-    description: "Eco-friendly building designs that minimize environmental impact.",
+    description:
+      "Eco-friendly building designs that minimize environmental impact.",
     tags: ["Sustainability", "Design", "Green Tech"],
     likes: 189,
     views: 987,
@@ -63,7 +65,7 @@ const featuredProjects = [
     likes: 312,
     views: 2100,
   },
-]
+];
 
 // Testimonials data
 const testimonials = [
@@ -94,29 +96,32 @@ const testimonials = [
       "The platform makes collaboration between departments seamless. We've seen interdisciplinary projects flourish as a result.",
     rating: 5,
   },
-]
+];
 
 // Hero carousel images
 const heroImages = [
   {
     src: "https://www.prince2.com/blog/wp-content/uploads/2024/09/The-power-of-collaboration-blog-banner.jpg",
     title: "Showcase Your Academic Excellence",
-    subtitle: "A platform for students to share their innovative projects with the world",
+    subtitle:
+      "A platform for students to share their innovative projects with the world",
     accent: "from-blue-500 to-cyan-500",
   },
   {
     src: "https://www.morebusiness.com/wp-content/uploads/2021/04/improve-teamwork.jpg",
     title: "Connect With Industry Partners",
-    subtitle: "Bridge the gap between academic projects and industry opportunities",
+    subtitle:
+      "Bridge the gap between academic projects and industry opportunities",
     accent: "from-purple-500 to-pink-500",
   },
   {
     src: "https://collegesofdistinction.com/wp-content/uploads/2019/06/1128112933113453.LVVrWgawQhwXvV1QyjtF_height640.png",
     title: "Collaborate Across Disciplines",
-    subtitle: "Discover interdisciplinary projects and connect with peers from other departments",
+    subtitle:
+      "Discover interdisciplinary projects and connect with peers from other departments",
     accent: "from-emerald-500 to-teal-500",
   },
-]
+];
 
 // Animation variants
 const fadeIn = {
@@ -129,7 +134,7 @@ const fadeIn = {
       ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
-}
+};
 
 const slideInLeft = {
   hidden: { opacity: 0, x: -60 },
@@ -141,7 +146,7 @@ const slideInLeft = {
       ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
-}
+};
 
 const slideInRight = {
   hidden: { opacity: 0, x: 60 },
@@ -153,7 +158,7 @@ const slideInRight = {
       ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
-}
+};
 
 const scaleIn = {
   hidden: { opacity: 0, scale: 0.8 },
@@ -165,7 +170,7 @@ const scaleIn = {
       ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
-}
+};
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -176,7 +181,7 @@ const staggerContainer = {
       delayChildren: 0.1,
     },
   },
-}
+};
 
 const floatingAnimation = {
   y: [-10, 10],
@@ -186,7 +191,7 @@ const floatingAnimation = {
     repeatType: "reverse",
     ease: "easeInOut",
   },
-}
+};
 
 const pulseAnimation = {
   scale: [1, 1.05, 1],
@@ -195,13 +200,13 @@ const pulseAnimation = {
     repeat: Number.POSITIVE_INFINITY,
     ease: "easeInOut",
   },
-}
+};
 
 const Section = ({ children, className }) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
-  })
+  });
 
   return (
     <motion.section
@@ -213,20 +218,20 @@ const Section = ({ children, className }) => {
     >
       {children}
     </motion.section>
-  )
-}
+  );
+};
 
 const HomePage = () => {
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [isAutoplay, setIsAutoplay] = useState(true)
-  const [isClient, setIsClient] = useState(false)
-  const [statisticsParticles, setStatisticsParticles] = useState([])
-  const [ctaParticles, setCtaParticles] = useState([])
-  const totalSlides = heroImages.length
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoplay, setIsAutoplay] = useState(true);
+  const [isClient, setIsClient] = useState(false);
+  const [statisticsParticles, setStatisticsParticles] = useState([]);
+  const [ctaParticles, setCtaParticles] = useState([]);
+  const totalSlides = heroImages.length;
 
   // Initialize client-side only values
   useEffect(() => {
-    setIsClient(true)
+    setIsClient(true);
 
     // Generate particle positions for statistics section (6 particles)
     setStatisticsParticles(
@@ -236,7 +241,7 @@ const HomePage = () => {
         delay: Math.random() * 2,
         duration: 3 + Math.random() * 2,
       }))
-    )
+    );
 
     // Generate particle positions for CTA section (12 particles)
     setCtaParticles(
@@ -246,31 +251,31 @@ const HomePage = () => {
         delay: Math.random() * 3,
         duration: 4 + Math.random() * 3,
       }))
-    )
-  }, [])
+    );
+  }, []);
 
   // Handle carousel navigation
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides)
-  }
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+  };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides)
-  }
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  };
 
   // Autoplay functionality
   useEffect(() => {
-    let interval
+    let interval;
     if (isAutoplay) {
-      interval = setInterval(nextSlide, 5000)
+      interval = setInterval(nextSlide, 5000);
     }
 
-    return () => clearInterval(interval)
-  }, [isAutoplay, currentSlide])
+    return () => clearInterval(interval);
+  }, [isAutoplay, currentSlide]);
 
   // Pause autoplay on hover
-  const handleMouseEnter = () => setIsAutoplay(false)
-  const handleMouseLeave = () => setIsAutoplay(true)
+  const handleMouseEnter = () => setIsAutoplay(false);
+  const handleMouseLeave = () => setIsAutoplay(true);
 
   return (
     <>
@@ -316,7 +321,11 @@ const HomePage = () => {
                     <motion.div
                       initial={{ opacity: 0, y: 60, x: -30 }}
                       animate={{ opacity: 1, y: 0, x: 0 }}
-                      transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      transition={{
+                        duration: 1,
+                        delay: 0.4,
+                        ease: [0.25, 0.46, 0.45, 0.94],
+                      }}
                       className="max-w-5xl"
                     >
                       {/* Enhanced badge with glow effect */}
@@ -338,7 +347,11 @@ const HomePage = () => {
                           </span>
                           <motion.div
                             animate={{ rotate: 360 }}
-                            transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                            transition={{
+                              duration: 3,
+                              repeat: Number.POSITIVE_INFINITY,
+                              ease: "linear",
+                            }}
                           >
                             <Star className="w-4 h-4 text-yellow-300" />
                           </motion.div>
@@ -402,7 +415,10 @@ const HomePage = () => {
                               <motion.div
                                 className="ml-3"
                                 animate={{ x: [0, 5, 0] }}
-                                transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                                transition={{
+                                  duration: 1.5,
+                                  repeat: Number.POSITIVE_INFINITY,
+                                }}
                               >
                                 <ArrowRight className="h-6 w-6" />
                               </motion.div>
@@ -427,7 +443,11 @@ const HomePage = () => {
                               <motion.div
                                 className="ml-3"
                                 animate={{ rotate: [0, 360] }}
-                                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                                transition={{
+                                  duration: 2,
+                                  repeat: Number.POSITIVE_INFINITY,
+                                  ease: "linear",
+                                }}
                               >
                                 <Sparkles className="h-5 w-5" />
                               </motion.div>
@@ -499,7 +519,9 @@ const HomePage = () => {
                 key={index}
                 onClick={() => setCurrentSlide(index)}
                 className={`relative h-4 rounded-full transition-all duration-300 ${
-                  currentSlide === index ? "bg-white w-12 shadow-lg" : "bg-white/50 hover:bg-white/80 w-4"
+                  currentSlide === index
+                    ? "bg-white w-12 shadow-lg"
+                    : "bg-white/50 hover:bg-white/80 w-4"
                 }`}
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
@@ -575,11 +597,17 @@ const HomePage = () => {
                 <div className="relative px-6 py-3 bg-gradient-to-r from-blue-100/80 to-indigo-100/80 dark:from-blue-900/30 dark:to-indigo-900/30 backdrop-blur-sm border border-blue-200/50 dark:border-blue-700/50 rounded-full flex items-center space-x-2">
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                    transition={{
+                      duration: 3,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "linear",
+                    }}
                   >
                     <Zap className="w-4 h-4 text-blue-600" />
                   </motion.div>
-                  <span className="text-blue-700 dark:text-blue-300 font-semibold text-sm">Platform Features</span>
+                  <span className="text-blue-700 dark:text-blue-300 font-semibold text-sm">
+                    Platform Features
+                  </span>
                   <Sparkles className="w-4 h-4 text-blue-600" />
                 </div>
               </motion.div>
@@ -600,9 +628,13 @@ const HomePage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                Our platform provides the perfect opportunity to highlight your academic achievements and connect with
-                industry professionals worldwide.
-                <span className="text-blue-600 font-semibold"> Join the future of academic collaboration.</span>
+                Our platform provides the perfect opportunity to highlight your
+                academic achievements and connect with industry professionals
+                worldwide.
+                <span className="text-blue-600 font-semibold">
+                  {" "}
+                  Join the future of academic collaboration.
+                </span>
               </motion.p>
             </motion.div>
 
@@ -697,7 +729,9 @@ const HomePage = () => {
                       transition={{ duration: 0.3 }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-                      {React.cloneElement(feature.icon, { className: "h-10 w-10 text-white relative z-10" })}
+                      {React.cloneElement(feature.icon, {
+                        className: "h-10 w-10 text-white relative z-10",
+                      })}
 
                       {/* Sparkle effect */}
                       <motion.div
@@ -757,35 +791,44 @@ const HomePage = () => {
             <motion.div
               className="absolute top-10 left-10 w-32 h-32 border-2 border-white/20 rounded-full"
               animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+              transition={{
+                duration: 20,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "linear",
+              }}
             />
             <motion.div
               className="absolute bottom-10 right-10 w-24 h-24 border-2 border-white/20 rotate-45"
               animate={{ rotate: 405 }}
-              transition={{ duration: 15, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+              transition={{
+                duration: 15,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "linear",
+              }}
             />
 
             {/* Client-side only floating particles */}
-            {isClient && statisticsParticles.map((particle, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-2 h-2 bg-white/30 rounded-full"
-                style={{
-                  left: `${particle.left}%`,
-                  top: `${particle.top}%`,
-                }}
-                animate={{
-                  y: [-20, 20],
-                  opacity: [0.3, 0.8, 0.3],
-                }}
-                transition={{
-                  duration: particle.duration,
-                  repeat: Number.POSITIVE_INFINITY,
-                  repeatType: "reverse",
-                  delay: particle.delay,
-                }}
-              />
-            ))}
+            {isClient &&
+              statisticsParticles.map((particle, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-2 h-2 bg-white/30 rounded-full"
+                  style={{
+                    left: `${particle.left}%`,
+                    top: `${particle.top}%`,
+                  }}
+                  animate={{
+                    y: [-20, 20],
+                    opacity: [0.3, 0.8, 0.3],
+                  }}
+                  transition={{
+                    duration: particle.duration,
+                    repeat: Number.POSITIVE_INFINITY,
+                    repeatType: "reverse",
+                    delay: particle.delay,
+                  }}
+                />
+              ))}
           </div>
 
           <div className="container mx-auto px-6 md:px-12 relative z-10">
@@ -816,8 +859,8 @@ const HomePage = () => {
               </h2>
 
               <p className="text-xl text-blue-100 max-w-4xl mx-auto leading-relaxed">
-                See how our platform is transforming academic collaboration and project visibility across universities
-                worldwide
+                See how our platform is transforming academic collaboration and
+                project visibility across universities worldwide
               </p>
             </motion.div>
 
@@ -828,15 +871,30 @@ const HomePage = () => {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
             >
               {[
-                { number: "2,500+", label: "Projects Showcased", icon: "📚", color: "from-blue-400 to-cyan-400" },
+                {
+                  number: "2,500+",
+                  label: "Projects Showcased",
+                  icon: "📚",
+                  color: "from-blue-400 to-cyan-400",
+                },
                 {
                   number: "15,000+",
                   label: "Student Participants",
                   icon: "👨‍🎓",
                   color: "from-purple-400 to-pink-400",
                 },
-                { number: "500+", label: "Industry Connections", icon: "🤝", color: "from-green-400 to-emerald-400" },
-                { number: "98%", label: "Satisfaction Rate", icon: "⭐", color: "from-yellow-400 to-orange-400" },
+                {
+                  number: "500+",
+                  label: "Industry Connections",
+                  icon: "🤝",
+                  color: "from-green-400 to-emerald-400",
+                },
+                {
+                  number: "98%",
+                  label: "Satisfaction Rate",
+                  icon: "⭐",
+                  color: "from-yellow-400 to-orange-400",
+                },
               ].map((stat, index) => (
                 <motion.div
                   key={index}
@@ -878,7 +936,11 @@ const HomePage = () => {
                         <motion.div
                           className={`absolute inset-0 bg-gradient-to-r ${stat.color} opacity-20 blur-lg rounded-full`}
                           animate={{ scale: [0.8, 1.2, 0.8] }}
-                          transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: index * 0.2 }}
+                          transition={{
+                            duration: 2,
+                            repeat: Number.POSITIVE_INFINITY,
+                            delay: index * 0.2,
+                          }}
                         />
                       </motion.div>
 
@@ -896,7 +958,9 @@ const HomePage = () => {
                         {stat.number}
                       </motion.div>
 
-                      <p className="text-blue-100 font-semibold text-lg">{stat.label}</p>
+                      <p className="text-blue-100 font-semibold text-lg">
+                        {stat.label}
+                      </p>
 
                       {/* Progress bar */}
                       <motion.div
@@ -955,11 +1019,16 @@ const HomePage = () => {
                   <div className="relative px-6 py-3 bg-gradient-to-r from-blue-100/80 to-indigo-100/80 dark:from-blue-900/30 dark:to-indigo-900/30 backdrop-blur-sm border border-blue-200/50 dark:border-blue-700/50 rounded-full flex items-center space-x-2">
                     <motion.div
                       animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                      transition={{
+                        duration: 2,
+                        repeat: Number.POSITIVE_INFINITY,
+                      }}
                     >
                       <Star className="w-4 h-4 text-blue-600 fill-current" />
                     </motion.div>
-                    <span className="text-blue-700 dark:text-blue-300 font-semibold text-sm">Featured Work</span>
+                    <span className="text-blue-700 dark:text-blue-300 font-semibold text-sm">
+                      Featured Work
+                    </span>
                     <Sparkles className="w-4 h-4 text-blue-600" />
                   </div>
                 </motion.div>
@@ -975,9 +1044,11 @@ const HomePage = () => {
                 </h2>
 
                 <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
-                  Discover innovative solutions and creative implementations from our talented students across various
-                  departments.
-                  <span className="block mt-2 text-blue-600 font-semibold">Innovation meets excellence.</span>
+                  Discover innovative solutions and creative implementations
+                  from our talented students across various departments.
+                  <span className="block mt-2 text-blue-600 font-semibold">
+                    Innovation meets excellence.
+                  </span>
                 </p>
               </div>
 
@@ -991,7 +1062,10 @@ const HomePage = () => {
                   <span className="mr-3 relative z-10">View All Projects</span>
                   <motion.div
                     animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Number.POSITIVE_INFINITY,
+                    }}
                     className="relative z-10"
                   >
                     <ArrowRight className="h-5 w-5" />
@@ -1075,7 +1149,9 @@ const HomePage = () => {
                         {project.title}
                       </h3>
 
-                      <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{project.description}</p>
+                      <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                        {project.description}
+                      </p>
 
                       {/* Enhanced CTA */}
                       <Link href={`/view-project/${project.id}`}>
@@ -1087,7 +1163,10 @@ const HomePage = () => {
                           <span className="mr-3">View Project</span>
                           <motion.div
                             animate={{ x: [0, 5, 0] }}
-                            transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                            transition={{
+                              duration: 1.5,
+                              repeat: Number.POSITIVE_INFINITY,
+                            }}
                           >
                             <ArrowRight className="h-5 w-5" />
                           </motion.div>
@@ -1182,11 +1261,17 @@ const HomePage = () => {
                 <div className="relative px-6 py-3 bg-gradient-to-r from-purple-100/80 to-pink-100/80 dark:from-purple-900/30 dark:to-pink-900/30 backdrop-blur-sm border border-purple-200/50 dark:border-purple-700/50 rounded-full flex items-center space-x-2">
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                    transition={{
+                      duration: 4,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "linear",
+                    }}
                   >
                     <Star className="w-4 h-4 text-purple-600 fill-current" />
                   </motion.div>
-                  <span className="text-purple-700 dark:text-purple-300 font-semibold text-sm">Community Voices</span>
+                  <span className="text-purple-700 dark:text-purple-300 font-semibold text-sm">
+                    Community Voices
+                  </span>
                   <Sparkles className="w-4 h-4 text-purple-600" />
                 </div>
               </motion.div>
@@ -1202,9 +1287,11 @@ const HomePage = () => {
               </h2>
 
               <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                Hear from students, faculty, and industry partners about their transformative experiences with our
-                platform.
-                <span className="block mt-2 text-purple-600 font-semibold">Real stories, real impact.</span>
+                Hear from students, faculty, and industry partners about their
+                transformative experiences with our platform.
+                <span className="block mt-2 text-purple-600 font-semibold">
+                  Real stories, real impact.
+                </span>
               </p>
             </motion.div>
 
@@ -1231,7 +1318,9 @@ const HomePage = () => {
                     animate={{ opacity: 1, scale: 1, rotate: 0 }}
                     transition={{ duration: 0.7, delay: index * 0.1 + 0.3 }}
                   >
-                    "
+                    quote: &quot;This platform has transformed how we showcase
+                    student work. The visibility has led to industry
+                    partnerships we never expected!&quot;,
                   </motion.div>
 
                   {/* Hover gradient background */}
@@ -1275,7 +1364,11 @@ const HomePage = () => {
                     </p>
 
                     <div className="flex items-center">
-                      <motion.div className="relative mr-4" whileHover={{ scale: 1.1 }} transition={{ duration: 0.3 }}>
+                      <motion.div
+                        className="relative mr-4"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.3 }}
+                      >
                         <img
                           src={testimonial.image || "/placeholder.svg"}
                           alt={testimonial.name}
@@ -1287,13 +1380,20 @@ const HomePage = () => {
                         <motion.div
                           className="absolute bottom-1 right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"
                           animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+                          transition={{
+                            duration: 2,
+                            repeat: Number.POSITIVE_INFINITY,
+                          }}
                         />
                       </motion.div>
 
                       <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-lg mb-1">{testimonial.name}</h4>
-                        <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold">{testimonial.role}</p>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-lg mb-1">
+                          {testimonial.name}
+                        </h4>
+                        <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold">
+                          {testimonial.role}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1348,27 +1448,28 @@ const HomePage = () => {
             </div>
 
             {/* Client-side only floating particles */}
-            {isClient && ctaParticles.map((particle, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-white/40 rounded-full"
-                style={{
-                  left: `${particle.left}%`,
-                  top: `${particle.top}%`,
-                }}
-                animate={{
-                  y: [-30, 30],
-                  opacity: [0.2, 0.8, 0.2],
-                  scale: [0.5, 1, 0.5],
-                }}
-                transition={{
-                  duration: particle.duration,
-                  repeat: Number.POSITIVE_INFINITY,
-                  repeatType: "reverse",
-                  delay: particle.delay,
-                }}
-              />
-            ))}
+            {isClient &&
+              ctaParticles.map((particle, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-1 h-1 bg-white/40 rounded-full"
+                  style={{
+                    left: `${particle.left}%`,
+                    top: `${particle.top}%`,
+                  }}
+                  animate={{
+                    y: [-30, 30],
+                    opacity: [0.2, 0.8, 0.2],
+                    scale: [0.5, 1, 0.5],
+                  }}
+                  transition={{
+                    duration: particle.duration,
+                    repeat: Number.POSITIVE_INFINITY,
+                    repeatType: "reverse",
+                    delay: particle.delay,
+                  }}
+                />
+              ))}
           </div>
 
           <div className="container mx-auto px-6 md:px-12 text-center relative z-10">
@@ -1383,11 +1484,17 @@ const HomePage = () => {
               <div className="relative px-8 py-4 bg-white/10 backdrop-blur-md border border-white/30 rounded-full flex items-center space-x-3">
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                  transition={{
+                    duration: 3,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "linear",
+                  }}
                 >
                   <Zap className="w-5 h-5 text-yellow-300" />
                 </motion.div>
-                <span className="text-white font-bold text-base">Join Our Community</span>
+                <span className="text-white font-bold text-base">
+                  Join Our Community
+                </span>
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
@@ -1418,8 +1525,9 @@ const HomePage = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl text-blue-100 max-w-5xl mx-auto mb-16 leading-relaxed"
             >
-              Join thousands of students worldwide who are building their portfolios, connecting with industry leaders,
-              and advancing their careers through our innovative platform.
+              Join thousands of students worldwide who are building their
+              portfolios, connecting with industry leaders, and advancing their
+              careers through our innovative platform.
               <span className="block mt-3 text-cyan-300 font-semibold text-lg">
                 🚀 Your next opportunity is just one project away.
               </span>
@@ -1448,7 +1556,10 @@ const HomePage = () => {
                     <motion.div
                       className="ml-3"
                       animate={{ x: [0, 5, 0] }}
-                      transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Number.POSITIVE_INFINITY,
+                      }}
                     >
                       <ArrowRight className="h-6 w-6" />
                     </motion.div>
@@ -1473,7 +1584,11 @@ const HomePage = () => {
                     <motion.div
                       className="ml-3"
                       animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                      transition={{
+                        duration: 3,
+                        repeat: Number.POSITIVE_INFINITY,
+                        ease: "linear",
+                      }}
                     >
                       <Star className="h-5 w-5" />
                     </motion.div>
@@ -1490,9 +1605,21 @@ const HomePage = () => {
               className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
             >
               {[
-                { icon: Users, text: "15,000+ Students", color: "from-blue-400 to-cyan-400" },
-                { icon: Award, text: "500+ Industry Partners", color: "from-purple-400 to-pink-400" },
-                { icon: BookOpen, text: "2,500+ Projects", color: "from-green-400 to-emerald-400" },
+                {
+                  icon: Users,
+                  text: "15,000+ Students",
+                  color: "from-blue-400 to-cyan-400",
+                },
+                {
+                  icon: Award,
+                  text: "500+ Industry Partners",
+                  color: "from-purple-400 to-pink-400",
+                },
+                {
+                  icon: BookOpen,
+                  text: "2,500+ Projects",
+                  color: "from-green-400 to-emerald-400",
+                },
               ].map((item, index) => (
                 <motion.div
                   key={index}
@@ -1503,11 +1630,18 @@ const HomePage = () => {
                   <motion.div
                     className={`p-2 bg-gradient-to-r ${item.color} rounded-full`}
                     animate={{ rotate: [0, 360] }}
-                    transition={{ duration: 8, repeat: Number.POSITIVE_INFINITY, ease: "linear", delay: index * 0.5 }}
+                    transition={{
+                      duration: 8,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "linear",
+                      delay: index * 0.5,
+                    }}
                   >
                     <item.icon className="h-5 w-5 text-white" />
                   </motion.div>
-                  <span className="text-blue-200/90 font-semibold">{item.text}</span>
+                  <span className="text-blue-200/90 font-semibold">
+                    {item.text}
+                  </span>
                 </motion.div>
               ))}
             </motion.div>
@@ -1518,10 +1652,7 @@ const HomePage = () => {
         <footer className="bg-gray-900 text-white pt-20 pb-10 relative overflow-hidden">
           {/* Background pattern */}
           <div className="absolute inset-0 opacity-5">
-            <div
-              className="absolute inset-0"
-      
-            />
+            <div className="absolute inset-0" />
           </div>
 
           <div className="container mx-auto px-6 md:px-12 relative z-10">
@@ -1539,8 +1670,9 @@ const HomePage = () => {
                   Project Showcase
                 </motion.h3>
                 <p className="text-gray-400 mb-8 leading-relaxed">
-                  A platform for students to showcase their innovative projects, connect with industry professionals,
-                  and advance their careers.
+                  A platform for students to showcase their innovative projects,
+                  connect with industry professionals, and advance their
+                  careers.
                 </p>
                 <div className="flex space-x-4">
                   {[
@@ -1568,7 +1700,9 @@ const HomePage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <h3 className="text-xl font-bold mb-6 text-white">Quick Links</h3>
+                <h3 className="text-xl font-bold mb-6 text-white">
+                  Quick Links
+                </h3>
                 <ul className="space-y-3">
                   {[
                     { text: "Browse Projects", href: "/browse-project" },
@@ -1581,7 +1715,10 @@ const HomePage = () => {
                         href={link.href}
                         className="text-gray-400 hover:text-blue-400 transition-colors flex items-center group"
                       >
-                        <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
+                        <motion.div
+                          whileHover={{ x: 5 }}
+                          transition={{ duration: 0.2 }}
+                        >
                           <ArrowRight className="h-4 w-4 mr-3 group-hover:text-blue-400" />
                         </motion.div>
                         {link.text}
@@ -1599,13 +1736,21 @@ const HomePage = () => {
               >
                 <h3 className="text-xl font-bold mb-6 text-white">Resources</h3>
                 <ul className="space-y-3">
-                  {["Project Guidelines", "Student Resources", "FAQs", "Privacy Policy"].map((item, index) => (
+                  {[
+                    "Project Guidelines",
+                    "Student Resources",
+                    "FAQs",
+                    "Privacy Policy",
+                  ].map((item, index) => (
                     <li key={index}>
                       <Link
                         href="#"
                         className="text-gray-400 hover:text-blue-400 transition-colors flex items-center group"
                       >
-                        <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
+                        <motion.div
+                          whileHover={{ x: 5 }}
+                          transition={{ duration: 0.2 }}
+                        >
                           <ArrowRight className="h-4 w-4 mr-3 group-hover:text-blue-400" />
                         </motion.div>
                         {item}
@@ -1621,12 +1766,15 @@ const HomePage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
-                <h3 className="text-xl font-bold mb-6 text-white">Contact Us</h3>
+                <h3 className="text-xl font-bold mb-6 text-white">
+                  Contact Us
+                </h3>
                 <ul className="space-y-6">
                   <li className="flex items-start group">
-                                       <MapPin className="h-5 w-5 text-blue-400 mr-4 mt-1 group-hover:scale-110 transition-transform" />
+                    <MapPin className="h-5 w-5 text-blue-400 mr-4 mt-1 group-hover:scale-110 transition-transform" />
                     <span className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                      University Campus, 123 Education Blvd, Academic City, AC 54321
+                      University Campus, 123 Education Blvd, Academic City, AC
+                      54321
                     </span>
                   </li>
                   <li className="flex items-center group">
@@ -1640,7 +1788,10 @@ const HomePage = () => {
                   </li>
                   <li className="flex items-center group">
                     <Phone className="h-5 w-5 text-blue-400 mr-4 group-hover:scale-110 transition-transform" />
-                    <a href="tel:+1234567890" className="text-gray-400 hover:text-blue-400 transition-colors">
+                    <a
+                      href="tel:+1234567890"
+                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                    >
                       (123) 456-7890
                     </a>
                   </li>
@@ -1666,7 +1817,10 @@ const HomePage = () => {
               transition={{ duration: 0.6, delay: 0.6 }}
             >
               <p className="text-gray-500 text-sm mb-4 md:mb-0 flex items-center">
-                <span>© {new Date().getFullYear()} College Project Showcase. All rights reserved.</span>
+                <span>
+                  © {new Date().getFullYear()} College Project Showcase. All
+                  rights reserved.
+                </span>
                 <motion.span
                   className="ml-2"
                   animate={{ scale: [1, 1.2, 1] }}
@@ -1676,23 +1830,25 @@ const HomePage = () => {
                 </motion.span>
               </p>
               <div className="flex space-x-8">
-                {["Terms of Service", "Privacy Policy", "Cookie Policy"].map((item, index) => (
-                  <Link
-                    key={index}
-                    href="#"
-                    className="text-gray-500 text-sm hover:text-gray-300 transition-colors relative group"
-                  >
-                    {item}
-                    <motion.div className="absolute bottom-0 left-0 h-px bg-blue-400 w-0 group-hover:w-full transition-all duration-300" />
-                  </Link>
-                ))}
+                {["Terms of Service", "Privacy Policy", "Cookie Policy"].map(
+                  (item, index) => (
+                    <Link
+                      key={index}
+                      href="#"
+                      className="text-gray-500 text-sm hover:text-gray-300 transition-colors relative group"
+                    >
+                      {item}
+                      <motion.div className="absolute bottom-0 left-0 h-px bg-blue-400 w-0 group-hover:w-full transition-all duration-300" />
+                    </Link>
+                  )
+                )}
               </div>
             </motion.div>
           </div>
         </footer>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

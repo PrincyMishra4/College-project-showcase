@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -49,29 +50,29 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-blue-400">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <a href="/" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
+                <Link href="/" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/browse-project" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
+                <Link href="/browse-project" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
                   Browse Projects
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/browse-department" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
+                <Link href="/browse-department" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
                   Departments
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/about" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
+                <Link href="/about" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/contact" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
+                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -81,19 +82,19 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-blue-400">For Students</h4>
             <ul className="space-y-2">
               <li>
-                <a href="/student-login" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
+                <Link href="/student-login" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
                   Student Portal
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/signup" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
+                <Link href="/signup" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
                   Register
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/login" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
+                <Link href="/login" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">
                   Login
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-gray-300 hover:text-white transition-colors duration-300 text-sm">

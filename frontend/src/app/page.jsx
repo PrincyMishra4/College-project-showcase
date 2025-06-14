@@ -1181,7 +1181,7 @@ const HomePage = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-xl rounded-full" />
                 <div className="relative px-6 py-3 bg-gradient-to-r from-purple-100/80 to-pink-100/80 dark:from-purple-900/30 dark:to-pink-900/30 backdrop-blur-sm border border-purple-200/50 dark:border-purple-700/50 rounded-full flex items-center space-x-2">
                   <motion.div
-                    animate={{ rotate: [0, 360] }}
+                    animate={{ rotate: 360 }}
                     transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                   >
                     <Star className="w-4 h-4 text-purple-600 fill-current" />
@@ -1624,7 +1624,7 @@ const HomePage = () => {
                 <h3 className="text-xl font-bold mb-6 text-white">Contact Us</h3>
                 <ul className="space-y-6">
                   <li className="flex items-start group">
-                    <MapPin className="h-5 w-5 text-blue-400 mr-4 mt-1 group-hover:scale-110 transition-transform" />
+                                       <MapPin className="h-5 w-5 text-blue-400 mr-4 mt-1 group-hover:scale-110 transition-transform" />
                     <span className="text-gray-400 group-hover:text-gray-300 transition-colors">
                       University Campus, 123 Education Blvd, Academic City, AC 54321
                     </span>

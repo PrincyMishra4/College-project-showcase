@@ -162,7 +162,7 @@ const Login = () => {
             </button>
             
             <p className="mt-6 flex justify-center font-sans text-sm font-light leading-normal text-inherit antialiased">
-              Don't have an account?
+              Don&apos;t have an account?
               <Link
                 className="ml-1 block font-sans text-sm font-bold leading-normal text-cyan-500 antialiased"
                 href="/signup"

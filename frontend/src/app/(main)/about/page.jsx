@@ -309,7 +309,7 @@ const AboutPage = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                   >
-                    Our mission extends beyond mere presentation—we're bridging the critical gap between{" "}
+                    Our mission extends beyond mere presentation—we&apos;re bridging the critical gap between{" "}
                     <span className="font-bold text-green-600">academic excellence</span> and{" "}
                     <span className="font-bold text-orange-600">real-world applications</span>, while creating
                     meaningful connections between talented students and industry leaders.
@@ -919,7 +919,7 @@ const AboutPage = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              Whether you're a visionary student, dedicated educator, or industry innovator, our platform offers endless
+              Whether you&apos;re a visionary student, dedicated educator, or industry innovator, our platform offers endless
               opportunities to make an impact.
               <span className="block mt-3 text-lg text-cyan-300 font-semibold">
                 🚀 Join the innovation revolution today!

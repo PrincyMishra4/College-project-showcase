@@ -53,7 +53,7 @@ const ViewProject = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh]">
         <h2 className="text-2xl font-bold text-gray-700">Project not found</h2>
-        <p className="mt-2 text-gray-600">The project you're looking for doesn't exist or has been removed.</p>
+        <p className="mt-2 text-gray-600">The project you&apos;re looking for doesn&apos;t exist or has been removed.</p>
         <Link href="/browse-project" className="mt-6 bg-violet-600 hover:bg-violet-700 text-white py-2 px-6 rounded-lg transition duration-300">
           Browse Projects
         </Link>

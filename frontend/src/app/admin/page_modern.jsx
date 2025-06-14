@@ -159,7 +159,7 @@ const AdminHome = () => {
             </div>
           </div>
           <p className="text-gray-600 dark:text-gray-300">
-            Welcome back! Here's what's happening with your platform today.
+            Welcome back! Here&apos;s what&apos;s happening with your platform today.
           </p>
         </motion.div>
 

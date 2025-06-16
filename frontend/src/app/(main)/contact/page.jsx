@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import {
   MapPin,
   Mail,
@@ -139,17 +140,18 @@ const Contact = () => {
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* Map/Image */}
-          <motion.div
+          {/* Map/Image */}          <motion.div
             className="relative h-[400px] overflow-hidden rounded-2xl shadow-lg"
             initial="initial"
             animate="animate"
             variants={fadeIn}
           >
-            <img
+            <Image
               className="h-full w-full object-cover transition-transform duration-700 ease-in-out hover:scale-105"
               src="https://images.unsplash.com/photo-1572021335469-31706a17aaef?q=80&w=1200&auto=format&fit=crop"
               alt="Our Office"
+              width={1200}
+              height={400}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
             <div className="absolute bottom-6 left-6 text-white">
@@ -357,17 +359,17 @@ const Contact = () => {
               <p className="text-gray-600 mb-4">
                 Can&apos;t find what you&apos;re looking for? Send us a message
                 and we&apos;ll get back to you as soon as possible.
-              </p>
-
-              <motion.div
+              </p>              <motion.div
                 className="mb-8 overflow-hidden rounded-xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
               >
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop"
                   alt="Team collaboration"
+                  width={1200}
+                  height={800}
                   className="w-full h-auto rounded-xl transform transition-transform duration-500 hover:scale-105"
                 />
               </motion.div>

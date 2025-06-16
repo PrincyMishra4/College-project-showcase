@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Footer = () => {
   return (
@@ -11,7 +12,7 @@ const Footer = () => {
           {/* College Info Section */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <img 
+              <Image 
                 src="/logocps.png" 
                 alt="College Logo" 
                 className="h-12 w-12 object-contain"

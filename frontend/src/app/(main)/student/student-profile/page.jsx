@@ -1,7 +1,8 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FaGithub, FaLinkedin, FaGraduationCap, FaBuilding, FaIdCard, FaPlus } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 
@@ -11,10 +12,7 @@ const StudentProfile = () => {
   const [error, setError] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    fetchStudentData();
-  }, []);
-  const fetchStudentData = async () => {
+  const fetchStudentData = useCallback(async () => {
     setLoading(true);
     try {
       // Get the token from localStorage
@@ -52,14 +50,16 @@ const StudentProfile = () => {
       
       const data = await response.json();
       console.log(data);
-      setStudent(data);
-    } catch (err) {
+      setStudent(data);    } catch (err) {
       setError(err.message);
-      toast.error("Failed to load student profile");
-    } finally {
+      toast.error("Failed to load student profile");    } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    fetchStudentData();
+  }, [fetchStudentData]);
 
   if (loading) {
     return (
@@ -107,12 +107,13 @@ const StudentProfile = () => {
       <div className="max-w-4xl mx-auto">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           {/* Header Section with Student Image */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-12 text-white">
-            <div className="flex flex-col sm:flex-row items-center gap-8">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-12 text-white">            <div className="flex flex-col sm:flex-row items-center gap-8">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                <img 
+                <Image 
                   src={student.image ? student.image : 'https://via.placeholder.com/150?text=No+Image'} 
                   alt={student.name} 
+                  width={128}
+                  height={128}
                   className="w-full h-full object-cover"
                 />
               </div>

@@ -19,6 +19,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/context/AuthContext"
+import Image from "next/image"
 
 // Mock auth context - replace with your actual auth context
 
@@ -110,7 +111,7 @@ const Navbar = () => {
               <Link href="/" className="flex items-center space-x-3 group">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                  <img
+                  <Image
                     src="/logocps.png"
                     alt="MindGallery Logo"
                     className="relative w-12 h-12 rounded-xl shadow-md group-hover:shadow-lg transition-shadow"
@@ -284,7 +285,7 @@ const Navbar = () => {
                     {/* Mobile Header */}
                     <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
                       <div className="flex items-center space-x-3">
-                        <img src="/placeholder.svg?height=40&width=40" alt="Logo" className="w-10 h-10 rounded-lg" />
+                        <Image src="/placeholder.svg?height=40&width=40" alt="Logo" className="w-10 h-10 rounded-lg" />
                         <div>
                           <h2 className="font-bold text-lg bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                             MindGallery

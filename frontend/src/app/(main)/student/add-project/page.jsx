@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -251,12 +252,13 @@ const AddProject = () => {
                   {AddProjectForm.values.image && (
                     <span className="text-sm text-green-600">Image uploaded</span>
                   )}
-                </div>
-                {AddProjectForm.values.image && (
+                </div>                {AddProjectForm.values.image && (
                   <div className="mt-2">
-                    <img 
+                    <Image 
                       src={AddProjectForm.values.image} 
                       alt="Project preview" 
+                      width={80}
+                      height={80}
                       className="h-20 object-cover rounded-md"
                     />
                   </div>

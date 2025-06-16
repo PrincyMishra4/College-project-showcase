@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import { ClientParticlesBackground } from "@/components/ParticlesBackground"
 import { ClientOnly } from "@/utils/clientUtils"
+import Image from 'next/image';
 
 const AboutPage = () => {
   const containerRef = useRef(null)
@@ -739,7 +740,7 @@ const AboutPage = () => {
                         className={`absolute inset-0 bg-gradient-to-r ${member.gradient} rounded-full p-1 shadow-lg`}
                       >
                         <div className="w-full h-full bg-white dark:bg-gray-800 rounded-full overflow-hidden">
-                          <img
+                          <Image
                             src={member.image || "/placeholder.svg"}
                             alt={`${member.name} - ${member.role}`}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -772,7 +773,7 @@ const AboutPage = () => {
 
                     {/* Enhanced member info */}
                     <motion.h3
-                      className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+                      className="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                       transition={{ delay: index * 0.1 }}

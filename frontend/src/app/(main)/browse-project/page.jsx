@@ -1,7 +1,8 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, ArrowRight, Calendar, User, Grid, List, Eye, ExternalLink, Github } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
@@ -11,7 +12,8 @@ import { ClientOnly, isClient } from '@/utils/clientUtils';
 // Define base API URL with environment handling
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
-const BrowseProject = () => {
+// Component that uses useSearchParams
+const BrowseProjectContent = () => {
   const searchParams = useSearchParams();
   const departmentParam = searchParams.get('department');
   
@@ -25,8 +27,7 @@ const BrowseProject = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [loading, setLoading] = useState(true);
   const [departments, setDepartments] = useState([]);
-
-  const fetchProjects = () => {
+  const fetchProjects = useCallback(() => {
     setLoading(true);
     
     // If department parameter exists, fetch only projects from that department
@@ -54,11 +55,10 @@ const BrowseProject = () => {
         console.log(err);
         setLoading(false);
       });
-  };
-
+  }, [departmentParam]);
   useEffect(() => {
     fetchProjects();
-  }, [departmentParam]);
+  }, [departmentParam, fetchProjects]);
 
   const handleSearch = (e) => {
     const term = e.target.value;
@@ -149,12 +149,13 @@ const BrowseProject = () => {
     >
       <Link href={'/view-project/' + project._id} className="group block">
         <div className="card-modern overflow-hidden hover:shadow-2xl hover:shadow-primary-500/10 hover:-translate-y-2 transition-all duration-500">
-          {/* Project Image */}
-          <div className="relative h-56 overflow-hidden">
+          {/* Project Image */}          <div className="relative h-56 overflow-hidden">
             {project.image ? (
-              <img 
+              <Image 
                 src={project.image} 
                 alt={project.title} 
+                width={400}
+                height={224}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
               />
             ) : (
@@ -234,12 +235,13 @@ const BrowseProject = () => {
       <Link href={'/view-project/' + project._id} className="group block">
         <div className="card-modern p-6 hover:shadow-xl hover:shadow-primary-500/10 transition-all duration-300">
           <div className="flex flex-col md:flex-row gap-6">
-            {/* Project Image */}
-            <div className="relative w-full md:w-48 h-32 overflow-hidden rounded-xl">
+            {/* Project Image */}            <div className="relative w-full md:w-48 h-32 overflow-hidden rounded-xl">
               {project.image ? (
-                <img 
+                <Image 
                   src={project.image} 
                   alt={project.title} 
+                  width={192}
+                  height={128}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                 />
               ) : (
@@ -544,9 +546,45 @@ const BrowseProject = () => {
               </motion.div>
             )}
           </>
-        )}
+        )}      </div>
+    </div>
+  );
+};
+
+// Loading fallback component
+const BrowseProjectLoading = () => (
+  <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900">
+    <ClientParticlesBackground 
+      particleCount={6}
+      seed={123} 
+      particleClassName="bg-primary-400/10"
+      particleSize="w-20 h-20"
+    />
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="text-center mb-12">
+        <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-500 to-accent-500 rounded-2xl mb-6">
+          <Grid className="w-10 h-10 text-white" />
+        </div>
+        <h1 className="text-5xl lg:text-6xl font-bold gradient-text mb-6">
+          Project Gallery
+        </h1>
+        <p className="text-xl text-secondary-600 dark:text-secondary-300 max-w-3xl mx-auto leading-relaxed">
+          Loading projects...
+        </p>
+      </div>
+      <div className="flex justify-center items-center py-20">
+        <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
       </div>
     </div>
+  </div>
+);
+
+// Main component with Suspense boundary
+const BrowseProject = () => {
+  return (
+    <Suspense fallback={<BrowseProjectLoading />}>
+      <BrowseProjectContent />
+    </Suspense>
   );
 };
 

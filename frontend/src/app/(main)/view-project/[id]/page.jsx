@@ -3,6 +3,7 @@ import { useParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { 
   Github, 
@@ -249,16 +250,17 @@ const ViewProject = () => {
           {/* Left Column - Media and Description */}
           <div className="lg:col-span-2 space-y-8">
             {/* Project Image */}
-            {project.image && (
-              <motion.div
+            {project.image && (              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
                 className="glass card-modern overflow-hidden"
               >
-                <img 
+                <Image 
                   src={project.image} 
                   alt={project.title} 
+                  width={800}
+                  height={600}
                   className="w-full h-auto object-cover rounded-lg"
                 />
               </motion.div>
@@ -349,10 +351,9 @@ const ViewProject = () => {
                 <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
                   <User className="w-6 h-6 text-primary-500" />
                   Developer
-                </h2>
-                <div className="flex items-start space-x-4">
+                </h2>                <div className="flex items-start space-x-4">
                   {developer.image ? (
-                    <img src={developer.image} alt={developer.name} className="w-16 h-16 rounded-full object-cover ring-2 ring-primary-200 dark:ring-primary-700" />
+                    <Image src={developer.image} alt={developer.name} width={64} height={64} className="w-16 h-16 rounded-full object-cover ring-2 ring-primary-200 dark:ring-primary-700" />
                   ) : (
                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center ring-2 ring-primary-200 dark:ring-primary-700">
                       <span className="text-xl font-bold text-white">{developer.name?.charAt(0) || 'S'}</span>

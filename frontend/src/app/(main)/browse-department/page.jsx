@@ -263,13 +263,14 @@ const BrowseDepartment = () => {
                                   href={`/view-project/${project._id}`} 
                                   key={project._id}
                                   className="block bg-gray-50 p-3 rounded-lg hover:bg-blue-50 transition duration-200"
-                                >
-                                  <div className="flex items-center">
+                                >                                  <div className="flex items-center">
                                     {project.image ? (
                                       <div className="h-12 w-12 mr-3 overflow-hidden rounded-lg">
-                                        <img 
+                                        <Image 
                                           src={project.image} 
                                           alt={project.title} 
+                                          width={48}
+                                          height={48}
                                           className="h-full w-full object-cover"
                                         />
                                       </div>
@@ -366,13 +367,14 @@ const BrowseDepartment = () => {
                                 href={`/view-project/${project._id}`} 
                                 key={project._id}
                                 className="bg-white p-3 rounded-lg hover:bg-blue-50 transition duration-200 border border-gray-100"
-                              >
-                                <div className="flex items-center">
+                              >                                <div className="flex items-center">
                                   {project.image ? (
                                     <div className="h-10 w-10 mr-3 overflow-hidden rounded">
-                                      <img 
+                                      <Image 
                                         src={project.image} 
                                         alt={project.title} 
+                                        width={40}
+                                        height={40}
                                         className="h-full w-full object-cover"
                                       />
                                     </div>

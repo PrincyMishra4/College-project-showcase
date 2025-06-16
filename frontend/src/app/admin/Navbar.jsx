@@ -27,6 +27,7 @@ import {
   BookOpen,
   LayoutDashboard,
 } from "lucide-react"
+import Image from "next/image"
 
 const Navbar = () => {
   const { id } = useParams()
@@ -201,7 +202,7 @@ const Navbar = () => {
           <motion.div className="flex items-center" variants={linkVariants}>
             <Link href="/admin" className="flex items-center space-x-3 group">
               <motion.div className="relative" whileHover={{ scale: 1.05, rotate: 5 }} transition={{ duration: 0.3 }}>
-                <img src="/logocps.png" alt="MindGallery Admin Logo" className="w-20 h-16 rounded-xl shadow-lg "  />
+                <Image src="/logocps.png" alt="MindGallery Admin Logo" className="w-20 h-16 rounded-xl shadow-lg "  />
               </motion.div>
               <div className="flex flex-col">
                 <span className="font-black text-xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">

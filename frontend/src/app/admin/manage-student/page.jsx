@@ -23,6 +23,7 @@ import {
   Archive,
   Download,
 } from "lucide-react";
+import Image from "next/image";
 
 const ManageStudent = () => {
   const [students, setStudents] = useState([]);
@@ -404,7 +405,7 @@ const ManageStudent = () => {
                   <div className="p-6">
                     {/* Student Avatar and Basic Info */}
                     <div className="flex items-center mb-4">
-                      <img src={student.image} className="w-16 h-16 bg-gradient-to-r from-accent-400 to-secondary-500 rounded-full flex items-center object-cover justify-center text-white font-bold text-lg mr-4" />
+                      <Image src={student.image} alt="student" className="w-16 h-16 bg-gradient-to-r from-accent-400 to-secondary-500 rounded-full flex items-center object-cover justify-center text-white font-bold text-lg mr-4" />
 
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">

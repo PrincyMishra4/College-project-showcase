@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Edit, 
   Trash2, 
@@ -379,14 +380,14 @@ const ManageProject = () => {
                         </>
                       )}
                     </span>
-                  </div>
-
-                  {/* Project Image */}
+                  </div>                  {/* Project Image */}
                   {project.image && (
                     <div className="h-48 overflow-hidden">
-                      <img
+                      <Image
                         src={project.image}
                         alt={project.title}
+                        width={400}
+                        height={192}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>

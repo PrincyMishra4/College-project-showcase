@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -23,6 +23,7 @@ import {
   Check,
   X
 } from "lucide-react";
+import Image from "next/image";
 
 const ManageUser = () => {
   const [userList, setuserList] = useState([]);
@@ -42,8 +43,7 @@ const ManageUser = () => {
       toast.error('Cannot connect to backend server. Please ensure the server is running on port 5000.');
       return false;
     }
-  };
-  const fetchUser = async (retryCount = 0) => {
+  };  const fetchUser = useCallback(async (retryCount = 0) => {
     setIsLoading(true);
     try {
       console.log(`Fetching users from: http://localhost:5000/user/getall (attempt ${retryCount + 1})`);
@@ -103,7 +103,7 @@ const ManageUser = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
   
   const deleteUser = async (id) => {
     try {
@@ -135,8 +135,7 @@ const ManageUser = () => {
       toast.error(`Error deleting user: ${error.message}`);
     }
   }
-  
-  useEffect(() => {
+    useEffect(() => {
     console.log('Component mounted, testing connection and fetching users...');
     
     const initializeData = async () => {
@@ -149,7 +148,7 @@ const ManageUser = () => {
     };
     
     initializeData();
-  }, []);
+  }, [fetchUser]);
 
   return (
     <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -249,7 +248,7 @@ const ManageUser = () => {
                     <td className="px-4 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-9 w-9 flex-shrink-0 rounded-full bg-gray-100 dark:bg-neutral-700">
-                          <img
+                          <Image
                             className="h-9 w-9 rounded-full object-cover"
                             src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`}
                             alt={user.name}

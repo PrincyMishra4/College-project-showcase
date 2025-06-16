@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const AddStudent = () => {
   const [imagePreview, setImagePreview] = useState('');
@@ -347,12 +348,13 @@ const AddStudent = () => {
                       onChange={uploadImage}
                       accept="image/*"
                     />
-                  </label>
-                  {imagePreview ? (
+                  </label>                  {imagePreview ? (
                     <div className="relative w-24 h-24 overflow-hidden rounded-full border-4 border-white shadow-lg">
-                      <img
+                      <Image
                         src={imagePreview}
                         alt="Profile Preview"
+                        width={96}
+                        height={96}
                         className="object-cover w-full h-full"
                       />
                       <button 

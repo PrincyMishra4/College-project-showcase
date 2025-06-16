@@ -5,12 +5,47 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const UpdateProject = () => {
   const [studentlist, setStudentlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const params = useParams();
   const router = useRouter();
+
+  const UpdateProjectForm = useFormik({
+    initialValues: {
+      title: '',
+      video: '',
+      image: '',
+      description: '',
+      githublink: '',
+      viewlink: '',
+      category: '',
+      department: '',
+      developedby: '',
+    },
+    validationSchema: Yup.object({
+      title: Yup.string().required('Title is required'),
+      githublink: Yup.string().url('Must be a valid URL'),
+      viewlink: Yup.string().url('Must be a valid URL'),
+      department: Yup.string().required('Department is required'),
+    }),
+    onSubmit: (values) => {
+      console.log('Updating project with values:', values);
+      
+      axios.put(`http://localhost:5000/project/update/${params.id}`, values)
+      .then((result) => {
+        console.log(result.data);
+        toast.success('Project updated successfully');
+        router.push('/admin/manage-project');
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error('Failed to update project');
+      });
+    },
+  });
 
   const upload = (e) => {
     const file = e.target.files[0];
@@ -59,70 +94,35 @@ const UpdateProject = () => {
     }
   };
 
-  const fetchProjectData = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5000/project/getbyid/${params.id}`);
-      console.log('Fetched project data:', response.data);
-      
-      // Set form values with fetched data
-      UpdateProjectForm.setValues({
-        title: response.data.title || '',
-        video: response.data.video || '',
-        image: response.data.image || '',
-        description: response.data.description || '',
-        githublink: response.data.githublink || '',
-        viewlink: response.data.viewlink || '',
-        category: response.data.category || '',
-        department: response.data.department || '',
-        developedby: response.data.developedby || '',
-      });
-      
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching project data:', error);
-      toast.error('Failed to fetch project data');
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchProjectData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/project/getbyid/${params.id}`);
+        console.log('Fetched project data:', response.data);
+        
+        // Set form values with fetched data
+        UpdateProjectForm.setValues({
+          title: response.data.title || '',
+          video: response.data.video || '',
+          image: response.data.image || '',
+          description: response.data.description || '',
+          githublink: response.data.githublink || '',
+          viewlink: response.data.viewlink || '',
+          category: response.data.category || '',
+          department: response.data.department || '',
+          developedby: response.data.developedby || '',
+        });        
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching project data:', error);
+        toast.error('Failed to fetch project data');
+        setLoading(false);
+      }
+    };
+
     fetchStudentlist();
     fetchProjectData();
-  }, [params.id]);
-
-  const UpdateProjectForm = useFormik({
-    initialValues: {
-      title: '',
-      video: '',
-      image: '',
-      description: '',
-      githublink: '',
-      viewlink: '',
-      category: '',
-      department: '',
-      developedby: '',
-    },
-    validationSchema: Yup.object({
-      title: Yup.string().required('Title is required'),
-      githublink: Yup.string().url('Must be a valid URL'),
-      viewlink: Yup.string().url('Must be a valid URL'),
-      department: Yup.string().required('Department is required'),
-    }),
-    onSubmit: (values) => {
-      console.log('Updating project with values:', values);
-      
-      axios.put(`http://localhost:5000/project/update/${params.id}`, values)
-      .then((result) => {
-        console.log(result.data);
-        toast.success('Project updated successfully');
-        router.push('/admin/manage-project');
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error('Failed to update project');
-      });
-    },
-  });
+  }, [params.id, UpdateProjectForm]);
 
   if (loading) {
     return (
@@ -284,7 +284,7 @@ const UpdateProject = () => {
               {UpdateProjectForm.values.image && (
                 <div className="mt-2">
                   <div className="border border-gray-200 rounded-lg p-1 inline-block">
-                    <img src={UpdateProjectForm.values.image} alt="Project preview" className="h-20 w-auto object-cover rounded" />
+                    <Image src={UpdateProjectForm.values.image} alt="Project preview" className="h-20 w-auto object-cover rounded" />
                   </div>
                 </div>
               )}

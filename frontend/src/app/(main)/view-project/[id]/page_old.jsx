@@ -3,6 +3,7 @@ import { useParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const ViewProject = () => {
   const { id } = useParams();
@@ -116,12 +117,13 @@ const ViewProject = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Image and Video */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Project Image */}
-          {project.image && (
+          {/* Project Image */}          {project.image && (
             <div className="overflow-hidden rounded-xl shadow-lg">
-              <img 
+              <Image 
                 src={project.image} 
                 alt={project.title} 
+                width={800}
+                height={600}
                 className="w-full h-auto object-cover"
               />
             </div>
@@ -170,10 +172,9 @@ const ViewProject = () => {
           {/* Developer Card (if available) */}
           {developer && (
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">Developed By</h2>
-              <div className="flex items-center space-x-4">
+              <h2 className="text-xl font-semibold mb-4 text-gray-800">Developed By</h2>              <div className="flex items-center space-x-4">
                 {developer.image ? (
-                  <img src={developer.image} alt={developer.name} className="w-16 h-16 rounded-full object-cover" />
+                  <Image src={developer.image} alt={developer.name} width={64} height={64} className="w-16 h-16 rounded-full object-cover" />
                 ) : (
                   <div className="w-16 h-16 rounded-full bg-violet-200 flex items-center justify-center">
                     <span className="text-xl font-bold text-violet-600">{developer.name?.charAt(0) || 'S'}</span>

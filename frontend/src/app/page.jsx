@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import Link from "next/link";
@@ -27,6 +27,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import Image from "next/image";
 
 // Featured projects data (replace with actual data)
 const featuredProjects = [
@@ -253,15 +254,14 @@ const HomePage = () => {
       }))
     );
   }, []);
-
   // Handle carousel navigation
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % totalSlides);
-  };
+  }, [totalSlides]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
-  };
+  }, [totalSlides]);
 
   // Autoplay functionality
   useEffect(() => {
@@ -271,7 +271,7 @@ const HomePage = () => {
     }
 
     return () => clearInterval(interval);
-  }, [isAutoplay, currentSlide]);
+  }, [isAutoplay, currentSlide, nextSlide]);
 
   // Pause autoplay on hover
   const handleMouseEnter = () => setIsAutoplay(false);
@@ -1369,7 +1369,7 @@ const HomePage = () => {
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <img
+                        <Image
                           src={testimonial.image || "/placeholder.svg"}
                           alt={testimonial.name}
                           className="w-16 h-16 rounded-full border-3 border-white shadow-lg"
